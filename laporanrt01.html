@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Laporan Masalah RT 01 RW 14</title>
+  <style>
+    :root {
+      --bg: #eef6ff;
+      --surface: #ffffff;
+      --surface-soft: #d9e8ff;
+      --primary: #5c8edc;
+      --primary-dark: #3461a8;
+      --text: #1f3150;
+      --muted: #5f748d;
+      --success: #2c8f6b;
+      --border: #c7d7ec;
+      --shadow: 0 18px 50px rgba(30, 67, 120, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f5fbff 0%, #eef6ff 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(144, 164, 195, 0.2);
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+    }
+
+    .brand span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 6px rgba(92, 142, 220, 0.14);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary-dark);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 60px 0 32px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      margin: 0;
+      line-height: 1.05;
+      color: var(--primary-dark);
+    }
+
+    .hero p {
+      max-width: 660px;
+      color: var(--muted);
+      margin-bottom: 22px;
+      font-size: 1rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn,
+    .card-button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 18px 26px rgba(92, 142, 220, 0.24);
+    }
+
+    .btn-secondary {
+      background: rgba(92, 142, 220, 0.1);
+      color: var(--primary-dark);
+    }
+
+    .btn:hover,
+    .card-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-visual {
+      background: radial-gradient(circle at top right, rgba(92, 142, 220, 0.16), transparent 42%),
+        linear-gradient(170deg, #f7fbff 0%, #d8e9ff 100%);
+      border: 1px solid rgba(92, 142, 220, 0.18);
+      border-radius: 32px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      min-height: 320px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-visual .hero-card {
+      max-width: 460px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .hero-visual h2 {
+      margin-top: 0;
+      color: var(--primary-dark);
+    }
+
+    .hero-visual ul {
+      padding-left: 20px;
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+
+    section {
+      padding: 32px 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 1.65rem;
+      color: var(--primary-dark);
+    }
+
+    .section-header p {
+      margin: 0;
+      max-width: 660px;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--primary-dark);
+      font-size: 1.18rem;
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .info-box {
+      background: linear-gradient(180deg, rgba(92,142,220,0.15) 0%, rgba(255,255,255,0.9) 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(92, 142, 220, 0.14);
+      padding: 20px;
+    }
+
+    .info-box h4 {
+      margin: 0 0 8px;
+      color: var(--primary-dark);
+    }
+
+    .info-box p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(92, 142, 220, 0.16);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(92, 142, 220, 0.12);
+      color: var(--primary-dark);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .list-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .list-item {
+      display: grid;
+      gap: 16px;
+      border: 1px solid rgba(92, 142, 220, 0.16);
+      border-radius: 20px;
+      background: #fcfdff;
+      padding: 18px;
+    }
+
+    .list-item strong {
+      color: var(--primary-dark);
+    }
+
+    .list-item p {
+      margin: 0;
+    }
+
+    .list-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 0.95rem;
+    }
+
+    .admin-response-block {
+      display: grid;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid rgba(92, 142, 220, 0.18);
+      border-radius: 18px;
+      background: rgba(92, 142, 220, 0.04);
+    }
+
+    .admin-response-row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-response-row label {
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .admin-evidence-options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .admin-evidence-options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .admin-evidence-options input {
+      accent-color: var(--primary);
+    }
+
+    .admin-dashboard-actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(92, 142, 220, 0.14);
+      background: #ffffff;
+      box-shadow: 0 12px 24px rgba(92, 142, 220, 0.08);
+    }
+
+    .stat-card h4 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .stat-card p {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .status-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 6px rgba(0,0,0,0.03);
+    }
+
+    .status-bullet.pending { background: #f2b93f; }
+    .status-bullet.seen { background: #5b97e0; }
+    .status-bullet.processing { background: #f4983d; }
+    .status-bullet.in-progress { background: #f4983d; }
+    .status-bullet.done { background: var(--success); }
+    .status-bullet.default { background: #8a99b6; }
+
+    .notification {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #e1f3ff;
+      border-radius: 18px;
+      padding: 16px 20px;
+      border: 1px solid rgba(92, 142, 220, 0.25);
+      color: var(--primary-dark);
+      margin-top: 4px;
+    }
+
+    footer {
+      padding: 32px 0 18px;
+      border-top: 1px solid rgba(144, 164, 195, 0.18);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2,
+      .info-grid,
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 36px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .nav-links {
+        justify-content: center;
+      }
+
+      header {
+        padding: 0 0 12px;
+      }
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 16px;
+      background: linear-gradient(180deg, #f5fbff 0%, #eef6ff 100%);
+    }
+
+    .login-card {
+      width: min(560px, 100%);
+      background: var(--surface);
+      border-radius: 32px;
+      padding: 36px 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(92, 142, 220, 0.18);
+    }
+
+    .login-card h2 {
+      margin-top: 0;
+      color: var(--primary-dark);
+      font-size: 2rem;
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: 10px;
+      margin: 24px 0 18px;
+    }
+
+    .tab-button {
+      flex: 1;
+      border: 1px solid rgba(92, 142, 220, 0.24);
+      background: #f7fbff;
+      color: var(--primary-dark);
+      padding: 12px 16px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .tab-button.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <h2>Masuk RT 01 RW 14</h2>
+      <p style="color: var(--muted); margin-top: 8px;">Pilih peran Anda untuk masuk ke sistem laporan dan pengelolaan.</p>
+      <div class="login-tabs">
+        <button type="button" class="tab-button active" data-tab="warga">Warga</button>
+        <button type="button" class="tab-button" data-tab="pengurus">Pengurus</button>
+      </div>
+
+      <div id="warga-panel" class="tab-panel active">
+        <form id="warga-login-form">
+          <label>
+            Nama Warga
+            <input id="warga-name" type="text" placeholder="Contoh: Siti" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Masuk sebagai Warga</button>
+        </form>
+      </div>
+
+      <div id="pengurus-panel" class="tab-panel">
+        <form id="admin-login-form">
+          <label>
+            Username
+            <input id="admin-username" type="text" placeholder="admin" required />
+          </label>
+          <label>
+            Password
+            <input id="admin-password" type="password" placeholder="•••••••" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Masuk sebagai Pengurus</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="main-content" class="hidden">
+    <header>
+      <div class="container">
+        <nav>
+          <a class="brand" href="#home"><span></span> RT 01 RW 14</a>
+          <div class="nav-links">
+            <a href="#home" class="active">Beranda</a>
+            <a href="#laporan" class="warga-only">Lapor Masalah</a>
+            <a href="#kritik" class="warga-only">Kritik & Saran</a>
+            <a href="#pengumuman">Pengumuman</a>
+            <a href="#dashboard" class="admin-only hidden">Dashboard</a>
+            <a href="#admin-reports" class="admin-only hidden">Laporan Masuk</a>
+            <a href="#admin-tanggapan" class="admin-only hidden">Tanggapan</a>
+            <a href="#admin-history" class="admin-only hidden">Riwayat Selesai</a>
+            <a href="#admin-feedback" class="admin-only hidden">Kritik Masuk</a>
+            <a href="#info">Info</a>
+          </div>
+          <button id="logout-button" class="btn btn-secondary hidden" type="button">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+  <main class="container">
+    <section id="home" class="hero">
+      <div>
+        <span class="badge">Program Kepengurusan RT 01 RW 14</span>
+        <div id="role-warga-banner" class="notification warga-only" style="margin-top: 18px;">Masuk sebagai Warga: laporkan masalah atau saran untuk pengurus.</div>
+        <div id="role-admin-banner" class="notification admin-only hidden" style="margin-top: 18px;">Halaman Pengurus: lihat semua laporan dan masukan warga secara lengkap.</div>
+        <h1>Laporkan masalah lingkungan, jalan berlubang, konflik tetangga, dan saran kepengurusan dengan cepat.</h1>
+        <p>Website ini membantu warga RT 01 RW 14 menyampaikan laporan, kritik, saran, dan informasi penting secara langsung kepada pengurus.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="scrollToSection('laporan')">Lapor Sekarang</button>
+          <button class="btn btn-secondary" onclick="scrollToSection('kritik')">Kritik & Saran</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <h2>Menu Utama</h2>
+          <ul>
+            <li>Laporan masalah jalan berlubang, sanitasi, keamanan, dan lingkungan.</li>
+            <li>Kritik & saran untuk tata kelola RT dan kegiatan warga.</li>
+            <li>Informasi dan pengumuman penting dengan tampilan cepat.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="laporan" class="warga-only">
+      <div class="section-header">
+        <div>
+          <h2>Lapor Masalah</h2>
+          <p>Gunakan formulir ini untuk melaporkan kondisi yang membutuhkan perhatian, mulai dari jalan berlubang hingga konflik antar tetangga.</p>
+        </div>
+        <div class="badge">Data tersimpan sementara di browser</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <form id="report-form">
+            <label>
+              Jenis Masalah
+              <select id="report-type" required>
+                <option value="">Pilih jenis masalah</option>
+                <option>Jalan Berlubang</option>
+                <option>Konflik Tetangga</option>
+                <option>Kebersihan Lingkungan</option>
+                <option>Keamanan</option>
+                <option>Air dan Sanitasi</option>
+                <option>Lainnya</option>
+              </select>
+            </label>
+
+            <label>
+              Lokasi
+              <input id="report-location" type="text" placeholder="Contoh: RT 01 Jalan Mawar" required />
+            </label>
+
+            <label>
+              Deskripsi
+              <textarea id="report-description" placeholder="Jelaskan masalah secara singkat" required></textarea>
+            </label>
+
+            <label>
+              Link Foto / Bukti (opsional)
+              <input id="report-photo" type="url" placeholder="https://" />
+            </label>
+
+            <label>
+              Upload Foto Bukti (opsional)
+              <input id="report-photo-file" type="file" accept="image/*" />
+            </label>
+
+            <button type="submit" class="btn btn-primary">Kirim Laporan</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Ringkasan Laporan</h3>
+          <p>Setiap laporan akan ditampilkan di bawah setelah dikirim. Ini membantu pengurus dan warga melihat kondisi yang sedang ditangani.</p>
+          <div id="report-list" class="list-card">
+            <div class="notification">Belum ada laporan. Isi formulir di samping untuk memulai.</div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:16px;">
+            <p id="summary-preview-note" style="color: var(--muted); margin:0; flex:1 1 100%;">Menampilkan ringkasan 2 laporan terakhir.</p>
+            <button id="show-more-reports" type="button" class="btn btn-secondary hidden">Lihat selengkapnya</button>
+          </div>
+          <button id="toggle-completed" type="button" class="btn btn-secondary" style="margin-top:20px;">Lihat Laporan Selesai</button>
+        </div>
+      </div>
+    </section>
+    <section id="completed-section" class="hidden warga-only">
+      <div class="section-header">
+        <div>
+          <h2>Laporan Selesai</h2>
+          <p>Semua laporan yang statusnya sudah selesai akan tampil di sini.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div id="completed-report-list" class="list-card">
+          <div class="notification">Belum ada laporan selesai.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pengumuman">
+      <div class="section-header">
+        <div>
+          <h2>Pengumuman & Event</h2>
+          <p>Informasi terbaru, acara warga, dan pengumuman penting RT 01 RW 14.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Daftar Pengumuman</h3>
+          <div id="announcement-list" class="list-card">
+            <div class="notification">Belum ada pengumuman saat ini.</div>
+          </div>
+        </div>
+        <div class="card admin-only hidden">
+          <h3>Tambah Pengumuman</h3>
+          <form id="announcement-form">
+            <label>
+              Judul Pengumuman
+              <input id="announcement-title" type="text" placeholder="Judul acara atau pengumuman" required />
+            </label>
+            <label>
+              Detail Pengumuman
+              <textarea id="announcement-body" placeholder="Isi pengumuman atau event" rows="5" required></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary">Tambah Pengumuman</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-dashboard" class="hidden admin-only">
+      <div class="section-header">
+        <div>
+          <h2>Dashboard Pengurus</h2>
+          <p>Ringkasan laporan dan kritik yang masuk. Gunakan data ini untuk memantau dan menindaklanjuti masalah RT.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="info-box">
+          <h4>Total Laporan Masuk</h4>
+          <p id="dashboard-total-reports">0</p>
+        </div>
+        <div class="info-box">
+          <h4>Total Kritik & Saran</h4>
+          <p id="dashboard-total-feedback">0</p>
+        </div>
+      </div>
+      <div class="info-grid" style="margin-top: 18px;">
+        <div class="info-box">
+          <h4>Status Menunggu</h4>
+          <p id="dashboard-pending-reports">0 laporan menunggu tindak lanjut</p>
+        </div>
+        <div class="info-box">
+          <h4>Selamat Datang</h4>
+          <p>Pengurus dapat memeriksa semua isi laporan dan masukan. Gunakan menu di atas untuk berpindah cepat.</p>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top: 24px;">
+        <div>
+          <h2>Statistik Laporan</h2>
+          <p>Persentase laporan berdasarkan jenis masalah yang masuk.</p>
+        </div>
+      </div>
+      <div id="dashboard-stats" class="stats-grid"></div>
+    </section>
+
+    <section id="admin-reports" class="hidden admin-only">
+      <div class="section-header">
+        <div>
+          <h2>Laporan Masuk</h2>
+          <p>Daftar semua laporan yang dikirim warga. Pengurus dapat melihat status dan detail setiap laporan.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div id="admin-report-list" class="list-card">
+          <div class="notification">Belum ada laporan masuk.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-tanggapan" class="hidden admin-only">
+      <div class="section-header">
+        <div>
+          <h2>Tanggapan Pengurus</h2>
+          <p>Atur status dan beri tanggapan pada setiap laporan warga agar prosesnya jelas dan transparan.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div id="admin-response-list" class="list-card">
+          <div class="notification">Pilih laporan untuk memberikan tanggapan dan status.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-history" class="hidden admin-only">
+      <div class="section-header">
+        <div>
+          <h2>Laporan Selesai</h2>
+          <p>Daftar laporan yang sudah selesai ditindaklanjuti oleh pengurus.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div id="admin-completed-report-list" class="list-card">
+          <div class="notification">Belum ada laporan selesai.</div>
+        </div>
+        <div style="padding: 16px 20px 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <p id="history-preview-note" style="color: var(--muted); margin: 0; flex: 1 1 100%;">Menampilkan ringkasan laporan selesai terakhir.</p>
+          <button id="show-more-history" type="button" class="btn btn-secondary hidden">Lihat lebih banyak</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-feedback" class="hidden admin-only">
+      <div class="section-header">
+        <div>
+          <h2>Kritik & Saran Masuk</h2>
+          <p>Daftar semua kritik dan saran dari warga. Pengurus bisa membaca dan merencanakan tindak lanjut.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div id="admin-feedback-list" class="list-card">
+          <div class="notification">Belum ada kritik atau saran masuk.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="kritik" class="warga-only">
+      <div class="section-header">
+        <div>
+          <h2>Kritik & Saran</h2>
+          <p>Berikan masukan yang membangun untuk pengurus RT, acara warga, dan kebijakan lingkungan sekitar.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <form id="feedback-form">
+            <label>
+              Nama (opsional)
+              <input id="feedback-name" type="text" placeholder="Contoh: Budi" />
+            </label>
+
+            <label>
+              Topik Kritik / Saran
+              <select id="feedback-topic" required>
+                <option value="">Pilih topik</option>
+                <option>Pengelolaan Kebersihan</option>
+                <option>Kegiatan RT</option>
+                <option>Keamanan Lingkungan</option>
+                <option>Komunikasi Pengurus</option>
+                <option>Lainnya</option>
+              </select>
+            </label>
+
+            <label>
+              Pesan
+              <textarea id="feedback-message" placeholder="Tuliskan kritik atau saran Anda" required></textarea>
+            </label>
+
+            <button type="submit" class="btn btn-primary">Kirim Kritik</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Masukan Warga</h3>
+          <p>Warga dapat melihat riwayat saran dan kritik yang sudah dikirim. Ini membantu pengurus merencanakan perbaikan bersama.</p>
+          <div id="feedback-list" class="list-card">
+            <div class="notification">Belum ada kritik atau saran. Kirim satu di samping untuk memulai.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="info">
+      <div class="section-header">
+        <div>
+          <h2>Informasi & Fitur Tambahan</h2>
+          <p>Bagian ini memberikan informasi tentang pengurus, tugas RT, dan alat bantu lain yang mendukung program kepengurusan.</p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>Pengurus RT</h4>
+          <p>Ketua: Bapak Ahmad<br />Wakil Ketua: Ibu Siti<br />Sekretaris: Bapak Joko</p>
+        </div>
+        <div class="info-box">
+          <h4>Tujuan Website</h4>
+          <p>Mendorong partisipasi warga dalam mengatasi masalah lingkungan dan memudahkan komunikasi antara warga dengan pengurus.</p>
+        </div>
+        <div class="info-box">
+          <h4>Menu Berguna</h4>
+          <p>Pengumuman acara, laporan status, daftar masalah prioritas, dan rekomendasi solusi untuk jalan dan keamanan.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  </div>
+
+  <footer class="container">
+    <p>© 2026 RT 01 RW 14. Website dari warga untuk warga, dengan fokus pada solusi ramah dan partisipasi komunitas.</p>
+  </footer>
+
+  <script>
+    const reportForm = document.getElementById('report-form');
+    const reportList = document.getElementById('report-list');
+    const feedbackForm = document.getElementById('feedback-form');
+    const feedbackList = document.getElementById('feedback-list');
+    const adminReportList = document.getElementById('admin-report-list');
+    const adminResponseList = document.getElementById('admin-response-list');
+    const adminFeedbackList = document.getElementById('admin-feedback-list');
+    const adminCompletedReportList = document.getElementById('admin-completed-report-list');
+    const completedReportList = document.getElementById('completed-report-list');
+    const completedSection = document.getElementById('completed-section');
+    const toggleCompleted = document.getElementById('toggle-completed');
+    const showMoreReportsButton = document.getElementById('show-more-reports');
+    const summaryPreviewNote = document.getElementById('summary-preview-note');
+    const showMoreHistoryButton = document.getElementById('show-more-history');
+    const historyPreviewNote = document.getElementById('history-preview-note');
+    const announcementList = document.getElementById('announcement-list');
+    const announcementForm = document.getElementById('announcement-form');
+    const announcementTitleInput = document.getElementById('announcement-title');
+    const announcementBodyInput = document.getElementById('announcement-body');
+    const reportPhotoFileInput = document.getElementById('report-photo-file');
+    const adminEvidenceDataUrls = {};
+    const loginScreen = document.getElementById('login-screen');
+    const mainContent = document.getElementById('main-content');
+    const logoutButton = document.getElementById('logout-button');
+    const wargaLoginForm = document.getElementById('warga-login-form');
+    const adminLoginForm = document.getElementById('admin-login-form');
+    const tabButtons = document.querySelectorAll('.tab-button');
+
+    const reportsKey = 'rt01rw14_reports';
+    const feedbackKey = 'rt01rw14_feedback';
+    const announcementsKey = 'rt01rw14_announcements';
+    const userKey = 'rt01rw14_user';
+    const adminUsername = 'admin';
+    const adminPassword = '123';
+
+    function setActiveTab(tab) {
+      tabButtons.forEach(button => {
+        button.classList.toggle('active', button.dataset.tab === tab);
+      });
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `${tab}-panel`);
+      });
+    }
+
+    function setRoleView(role) {
+      document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', role !== 'pengurus'));
+      document.querySelectorAll('.warga-only').forEach(el => el.classList.toggle('hidden', role !== 'warga'));
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.classList.contains('admin-only')) {
+          link.classList.toggle('hidden', role !== 'pengurus');
+        }
+        if (link.classList.contains('warga-only')) {
+          link.classList.toggle('hidden', role !== 'warga');
+        }
+      });
+      if (role === 'pengurus') {
+        const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+        const feedbacks = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+        document.getElementById('dashboard-total-reports').textContent = reports.length;
+        document.getElementById('dashboard-total-feedback').textContent = feedbacks.length;
+        document.getElementById('dashboard-pending-reports').textContent = `${reports.filter(report => report.status === 'Menunggu tindak lanjut').length} laporan menunggu tindak lanjut`;
+        renderReportList(reports, adminReportList, true, false);
+        renderReportList(reports, adminResponseList, true, false);
+        renderAdminHistoryReports();
+        renderReportStats(reports);
+        renderFeedbackList(feedbacks, adminFeedbackList, true);
+      }
+    }
+
+    function showMainContent(user) {
+      loginScreen.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+      logoutButton.classList.remove('hidden');
+      document.title = `RT 01 RW 14 - ${user.role === 'pengurus' ? 'Pengurus' : 'Warga'}`;
+      setRoleView(user.role);
+      if (user.role === 'pengurus') {
+        alert('Selamat datang, Pengurus!');
+      } else {
+        alert(`Selamat datang, ${user.name || 'Warga'}!`);
+      }
+    }
+
+    function tryAutoLogin() {
+      const storedUser = JSON.parse(localStorage.getItem(userKey) || 'null');
+      if (storedUser) {
+        showMainContent(storedUser);
+        return true;
+      }
+      return false;
+    }
+
+    let showAllSummaryReports = false;
+
+    function loadStoredData() {
+      const storedReports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      const storedFeedback = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+      const storedAnnouncements = JSON.parse(localStorage.getItem(announcementsKey) || '[]');
+      renderWargaSummary(storedReports, showAllSummaryReports);
+      renderFeedbackList(storedFeedback);
+      renderAnnouncements(storedAnnouncements);
+      renderReportList(storedReports, adminReportList, true, false);
+      renderReportList(storedReports, adminResponseList, true, false);
+      renderAdminHistoryReports();
+      renderReportStats(storedReports);
+      renderFeedbackList(storedFeedback, adminFeedbackList, true);
+    }
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+    });
+
+
+    reportPhotoFileInput.addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) {
+        reportPhotoFileInput.dataset.photo = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        reportPhotoFileInput.dataset.photo = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    logoutButton.addEventListener('click', () => {
+      localStorage.removeItem(userKey);
+      loginScreen.classList.remove('hidden');
+      mainContent.classList.add('hidden');
+      logoutButton.classList.add('hidden');
+      setActiveTab('warga');
+    });
+
+    wargaLoginForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = document.getElementById('warga-name').value.trim();
+      const user = { role: 'warga', name };
+      localStorage.setItem(userKey, JSON.stringify(user));
+      showMainContent(user);
+    });
+
+    adminLoginForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const username = document.getElementById('admin-username').value.trim();
+      const password = document.getElementById('admin-password').value;
+      if (username === adminUsername && password === adminPassword) {
+        const user = { role: 'pengurus', name: 'Admin' };
+        localStorage.setItem(userKey, JSON.stringify(user));
+        showMainContent(user);
+      } else {
+        alert('Username atau password salah. Silakan cek kembali kredensial Anda.');
+      }
+    });
+
+    function getReportStatusClass(status) {
+      if (status === 'Selesai') return 'done';
+      if (status === 'Dalam proses' || status === 'Dikerjakan') return 'processing';
+      if (status === 'Dilihat') return 'seen';
+      if (status === 'Menunggu tindak lanjut') return 'pending';
+      return 'default';
+    }
+
+    function makeReportItem(report, index, isAdmin = false) {
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      if (report.deleted) {
+        if (isAdmin) {
+          item.innerHTML = `
+            <div><strong>${report.type}</strong> - ${report.location} <span style="color: var(--muted); font-size:0.95rem;">(dihapus)</span></div>
+            <p style="color: var(--muted);">Laporan ini telah dihapus karena konten sensitif.</p>
+            <div class="list-meta">
+              <span>${report.deletedAt || report.date}</span>
+              <span>${report.status || 'Dihapus'}</span>
+            </div>
+          `;
+        } else {
+          item.innerHTML = `
+            <div><strong>Laporan dihapus karena konten sensitif</strong></div>
+            <p style="color: var(--muted);">Laporan ini disembunyikan karena tidak sesuai.</p>
+            <div class="list-meta"><span>${report.deletedAt || report.date}</span></div>
+          `;
+        }
+        return item;
+      }
+      const responseText = report.response ? `<p style="margin-top: 12px; color: var(--primary-dark);"><strong>Tanggapan:</strong> ${report.response}</p>` : '';
+      const deleteButton = isAdmin ? `
+        <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="deleteReport(${index})">Hapus Laporan</button>
+      ` : '';
+      const adminControls = isAdmin ? `
+        <div class="admin-response-block">
+          <div class="admin-response-row">
+            <div>
+              <label>Status Laporan</label>
+              <select id="status-${index}" onchange="updateReportStatus(${index}, this.value)" style="width:100%; padding:12px 14px; border-radius:16px; border:1px solid var(--border);">
+                <option value="Menunggu tindak lanjut" ${report.status === 'Menunggu tindak lanjut' ? 'selected' : ''}>Menunggu tindak lanjut</option>
+                <option value="Dilihat" ${report.status === 'Dilihat' ? 'selected' : ''}>Dilihat</option>
+                <option value="Dalam proses" ${report.status === 'Dalam proses' ? 'selected' : ''}>Dalam proses</option>
+                <option value="Dikerjakan" ${report.status === 'Dikerjakan' ? 'selected' : ''}>Dikerjakan</option>
+                <option value="Selesai" ${report.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+              </select>
+            </div>
+            <div>
+              <label>Opsi Bukti Selesai</label>
+              <div class="admin-evidence-options">
+                <label><input type="radio" name="evidence-type-${index}" value="photo" checked /> Foto</label>
+                <label><input type="radio" name="evidence-type-${index}" value="link" /> Link</label>
+              </div>
+            </div>
+          </div>
+          <div class="admin-response-row">
+            <div>
+              <label>Upload Foto Bukti</label>
+              <input id="evidence-file-${index}" type="file" accept="image/*" onchange="handleEvidenceFileChange(event, ${index})" />
+            </div>
+            <div>
+              <label>Link Bukti Selesai</label>
+              <input id="evidence-${index}" type="url" placeholder="https://" style="width:100%; padding:12px 14px; border-radius:16px; border:1px solid var(--border);" />
+            </div>
+          </div>
+          <div>
+            <label>Catatan Tanggapan</label>
+            <textarea id="response-${index}" rows="3" style="width:100%; border:1px solid var(--border); border-radius:16px; padding:12px;">${report.response || ''}</textarea>
+          </div>
+          <button type="button" class="btn btn-secondary" style="margin-top:12px; width: fit-content;" onclick="saveReportResponse(${index})">Simpan Tanggapan</button>
+        </div>
+      ` : '';
+      const statusClass = getReportStatusClass(report.status);
+      item.innerHTML = `
+        <div><strong>${report.type}</strong> - ${report.location}</div>
+        <p>${report.description}</p>
+        <div class="list-meta">
+          <span>${report.date}</span>
+          <span class="status-indicator"><span class="status-bullet ${statusClass}"></span>${report.status}</span>
+        </div>
+        ${report.photo ? `<p><a href="${report.photo}" target="_blank" rel="noreferrer">Lihat bukti / foto</a></p>` : ''}
+        ${report.evidence ? `<p><strong>Bukti Selesai:</strong><br><a href="${report.evidence}" target="_blank" rel="noreferrer"><img src="${report.evidence}" alt="Bukti selesai" style="max-width:140px; border-radius:16px; margin-top:10px; display:block;" /></a></p>` : ''}
+        ${responseText}
+        ${adminControls}
+        ${deleteButton}
+      `;
+      return item;
+    }
+
+    function makeFeedbackItem(entry, index, isAdmin = false) {
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      if (entry.deleted) {
+        if (isAdmin) {
+          item.innerHTML = `
+            <div><strong>${entry.topic}</strong> ${entry.name ? `- ${entry.name}` : ''} <span style="color: var(--muted); font-size:0.95rem;">(dihapus)</span></div>
+            <p style="color: var(--muted);">Komentar ini sudah dihapus oleh pengurus karena tidak sesuai.</p>
+            <div class="list-meta"><span>${entry.date}</span></div>
+          `;
+        } else {
+          item.innerHTML = `
+            <div><strong>Konten sensitif dihapus</strong></div>
+            <p style="color: var(--muted);">Komentar ini disembunyikan karena mengandung konten yang tidak pantas.</p>
+            <div class="list-meta"><span>${entry.date}</span></div>
+          `;
+        }
+        return item;
+      }
+      const deleteButton = isAdmin ? `
+        <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="deleteFeedback(${index})">Hapus Komentar</button>
+      ` : '';
+      item.innerHTML = `
+        <div><strong>${entry.topic}</strong> ${entry.name ? `- ${entry.name}` : ''}</div>
+        <p>${entry.message}</p>
+        <div class="list-meta"><span>${entry.date}</span></div>
+        ${deleteButton}
+      `;
+      return item;
+    }
+
+    function renderFeedbackList(feedback, target = feedbackList, isAdmin = false) {
+      target.innerHTML = '';
+      if (!feedback.length) {
+        target.innerHTML = '<div class="notification">Belum ada kritik atau saran. Kirim satu di samping untuk memulai.</div>';
+        return;
+      }
+      feedback.slice().reverse().forEach((entry, reverseIndex) => {
+        const index = feedback.length - 1 - reverseIndex;
+        target.appendChild(makeFeedbackItem(entry, index, isAdmin));
+      });
+    }
+
+    function normalizeStatus(status) {
+      return (status || '').toString().trim().toLowerCase();
+    }
+
+    function renderReportList(reports, target = reportList, isAdmin = false, includeCompleted = true, onlyStatus = null, limit = null) {
+      target.innerHTML = '';
+      let filteredReports = reports
+        .map((report, originalIndex) => ({ report, originalIndex }));
+      if (onlyStatus) {
+        const expected = normalizeStatus(onlyStatus);
+        filteredReports = filteredReports.filter(({ report }) => normalizeStatus(report.status) === expected);
+      } else if (!includeCompleted) {
+        filteredReports = filteredReports.filter(({ report }) => normalizeStatus(report.status) !== 'selesai');
+      }
+      let visibleReports = filteredReports.slice().reverse();
+      if (limit && visibleReports.length > limit) {
+        visibleReports = visibleReports.slice(0, limit);
+      }
+      if (!visibleReports.length) {
+        const emptyMessage = onlyStatus
+          ? 'Belum ada laporan selesai.'
+          : includeCompleted
+            ? 'Belum ada laporan. Isi formulir di samping untuk memulai.'
+            : 'Tidak ada laporan aktif saat ini.';
+        target.innerHTML = `<div class="notification">${emptyMessage}</div>`;
+        return;
+      }
+      visibleReports.forEach(({ report, originalIndex }) => {
+        target.appendChild(makeReportItem(report, originalIndex, isAdmin));
+      });
+    }
+
+    function renderWargaSummary(reports, expanded = false) {
+      const limit = expanded ? null : 2;
+      renderReportList(reports, reportList, false, true, null, limit);
+      if (!showMoreReportsButton || !summaryPreviewNote) return;
+      if (reports.length <= 2) {
+        showMoreReportsButton.classList.add('hidden');
+        summaryPreviewNote.textContent = 'Menampilkan semua laporan.';
+      } else {
+        showMoreReportsButton.classList.remove('hidden');
+        showMoreReportsButton.textContent = expanded ? 'Tutup' : 'Lihat selengkapnya';
+        summaryPreviewNote.textContent = expanded
+          ? 'Menampilkan semua laporan.'
+          : 'Menampilkan ringkasan 2 laporan terakhir. Klik selengkapnya untuk melihat semua.';
+      }
+    }
+
+    function renderAdminHistoryReports(fullView = false) {
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      const completedReports = reports.filter(report => normalizeStatus(report.status) === 'selesai');
+      const limit = fullView ? null : 2;
+      renderReportList(reports, adminCompletedReportList, true, true, 'Selesai', limit);
+      if (!historyPreviewNote || !showMoreHistoryButton) return;
+      if (completedReports.length === 0) {
+        showMoreHistoryButton.classList.add('hidden');
+        historyPreviewNote.textContent = 'Belum ada laporan selesai.';
+        showMoreHistoryButton.dataset.fullView = 'false';
+        return;
+      }
+      if (fullView) {
+        showMoreHistoryButton.classList.remove('hidden');
+        showMoreHistoryButton.textContent = 'Tutup';
+        showMoreHistoryButton.dataset.fullView = 'true';
+        historyPreviewNote.textContent = 'Menampilkan semua laporan selesai.';
+      } else {
+        if (completedReports.length <= 2) {
+          showMoreHistoryButton.classList.add('hidden');
+          historyPreviewNote.textContent = 'Menampilkan semua laporan selesai.';
+          showMoreHistoryButton.dataset.fullView = 'false';
+        } else {
+          showMoreHistoryButton.classList.remove('hidden');
+          showMoreHistoryButton.textContent = 'Lihat lebih banyak';
+          showMoreHistoryButton.dataset.fullView = 'false';
+          historyPreviewNote.textContent = 'Menampilkan ringkasan 2 laporan selesai terakhir. Klik lihat lebih banyak untuk membuka semua riwayat.';
+        }
+      }
+    }
+
+    function renderReportStats(reports) {
+      const statsContainer = document.getElementById('dashboard-stats');
+      if (!statsContainer) return;
+      statsContainer.innerHTML = '';
+      const total = reports.length || 1;
+      const types = [
+        'Jalan Berlubang',
+        'Konflik Tetangga',
+        'Kebersihan Lingkungan',
+        'Keamanan',
+        'Air dan Sanitasi',
+        'Lainnya'
+      ];
+      types.forEach(type => {
+        const count = reports.filter(report => report.type === type).length;
+        const percent = Math.round((count / total) * 100);
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+        card.innerHTML = `
+          <h4>${type}</h4>
+          <p>${percent}%</p>
+          <span style="color: var(--muted); font-size:0.92rem;">${count} laporan</span>
+        `;
+        statsContainer.appendChild(card);
+      });
+    }
+
+    const badWords = ['anjing', 'bangsat', 'bajingan', 'kontol', 'memek', 'shit', 'fuck', 'bodoh', 'tolol'];
+
+    function hasBadWords(text) {
+      if (!text) return false;
+      const normalized = text.toLowerCase();
+      return badWords.some(word => normalized.includes(word));
+    }
+
+    function renderCompletedReports() {
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      const completed = reports.filter(report => normalizeStatus(report.status) === 'selesai');
+      if (!completed.length) {
+        completedReportList.innerHTML = '<div class="notification">Belum ada laporan selesai.</div>';
+        return;
+      }
+      renderReportList(reports, completedReportList, false, true, 'Selesai');
+    }
+
+    function makeAnnouncementItem(entry, index, isAdmin = false) {
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      if (!entry || entry.deleted) {
+        item.innerHTML = `
+          <div><strong>Pengumuman dihapus</strong></div>
+          <p style="color: var(--muted);">Pengumuman ini telah dihapus oleh pengurus.</p>
+        `;
+        return item;
+      }
+      const deleteButton = isAdmin ? `
+        <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="deleteAnnouncement(${index})">Hapus</button>
+      ` : '';
+      item.innerHTML = `
+        <div><strong>${entry.title}</strong></div>
+        <p>${entry.body}</p>
+        <div class="list-meta"><span>${entry.date}</span></div>
+        ${deleteButton}
+      `;
+      return item;
+    }
+
+    function renderAnnouncements(announcements) {
+      if (!announcementList) return;
+      announcementList.innerHTML = '';
+      if (!announcements.length) {
+        announcementList.innerHTML = '<div class="notification">Belum ada pengumuman saat ini.</div>';
+        return;
+      }
+      announcements.slice().reverse().forEach((entry, reverseIndex) => {
+        const index = announcements.length - 1 - reverseIndex;
+        const isAdmin = JSON.parse(localStorage.getItem(userKey) || 'null')?.role === 'pengurus';
+        announcementList.appendChild(makeAnnouncementItem(entry, index, isAdmin));
+      });
+    }
+
+    function saveAnnouncement(title, body) {
+      const announcements = JSON.parse(localStorage.getItem(announcementsKey) || '[]');
+      announcements.push({
+        title,
+        body,
+        date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
+      });
+      saveToStorage(announcementsKey, announcements);
+      renderAnnouncements(announcements);
+    }
+
+    function deleteAnnouncement(index) {
+      const currentUser = JSON.parse(localStorage.getItem(userKey) || 'null');
+      if (currentUser?.role !== 'pengurus') {
+        return;
+      }
+      const announcements = JSON.parse(localStorage.getItem(announcementsKey) || '[]');
+      if (announcements[index]) {
+        announcements.splice(index, 1);
+        saveToStorage(announcementsKey, announcements);
+        renderAnnouncements(announcements);
+      }
+    }
+
+    function handleEvidenceFileChange(event, index) {
+      const file = event.target.files[0];
+      if (!file) {
+        delete adminEvidenceDataUrls[index];
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        adminEvidenceDataUrls[index] = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateReportStatus(index, value) {
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      if (reports[index]) {
+        reports[index].status = value;
+        saveToStorage(reportsKey, reports);
+        renderWargaSummary(reports, showAllSummaryReports);
+        renderReportList(reports, adminReportList, true, false);
+        renderReportList(reports, adminResponseList, true, false);
+        renderAdminHistoryReports();
+        renderReportStats(reports);
+        renderCompletedReports();
+      }
+    }
+
+    function saveReportResponse(index) {
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      const responseInput = document.getElementById(`response-${index}`);
+      const evidenceInput = document.getElementById(`evidence-${index}`);
+      const evidenceTypeInput = document.querySelector(`input[name="evidence-type-${index}"]:checked`);
+      if (reports[index] && responseInput) {
+        reports[index].response = responseInput.value.trim();
+        const selectedType = evidenceTypeInput ? evidenceTypeInput.value : 'photo';
+        const evidenceUrl = evidenceInput ? evidenceInput.value.trim() : '';
+        if (selectedType === 'link' && evidenceUrl) {
+          reports[index].evidence = evidenceUrl;
+        } else if (selectedType === 'photo' && adminEvidenceDataUrls[index]) {
+          reports[index].evidence = adminEvidenceDataUrls[index];
+        }
+        saveToStorage(reportsKey, reports);
+        renderWargaSummary(reports, showAllSummaryReports);
+        renderReportList(reports, adminReportList, true, false);
+        renderReportList(reports, adminResponseList, true, false);
+        renderAdminHistoryReports();
+        renderReportStats(reports);
+        renderCompletedReports();
+        alert('Tanggapan laporan berhasil disimpan.');
+      }
+    }
+
+    function saveToStorage(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function deleteFeedback(index) {
+      const feedbacks = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+      if (!feedbacks[index]) return;
+      feedbacks[index].deleted = true;
+      feedbacks[index].deletedAt = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      saveToStorage(feedbackKey, feedbacks);
+      renderFeedbackList(feedbacks);
+      renderFeedbackList(feedbacks, adminFeedbackList, true);
+    }
+
+    function deleteReport(index) {
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      if (!reports[index]) return;
+      reports[index].deleted = true;
+      reports[index].deletedAt = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      saveToStorage(reportsKey, reports);
+      renderWargaSummary(reports, showAllSummaryReports);
+      renderReportList(reports, adminReportList, true, false);
+      renderReportList(reports, adminResponseList, true, false);
+      renderAdminHistoryReports();
+      renderReportStats(reports);
+      renderCompletedReports();
+    }
+
+    toggleCompleted.addEventListener('click', () => {
+      completedSection.classList.toggle('hidden');
+      if (completedSection.classList.contains('hidden')) {
+        toggleCompleted.textContent = 'Lihat Laporan Selesai';
+      } else {
+        toggleCompleted.textContent = 'Tutup Laporan Selesai';
+        renderCompletedReports();
+      }
+    });
+
+    if (showMoreHistoryButton) {
+      showMoreHistoryButton.addEventListener('click', () => {
+        const expanded = showMoreHistoryButton.dataset.fullView === 'true';
+        renderAdminHistoryReports(!expanded);
+      });
+    }
+
+    if (showMoreReportsButton) {
+      showMoreReportsButton.addEventListener('click', () => {
+        showAllSummaryReports = !showAllSummaryReports;
+        const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+        renderWargaSummary(reports, showAllSummaryReports);
+      });
+    }
+
+    if (announcementForm) {
+      announcementForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const title = announcementTitleInput.value.trim();
+        const body = announcementBodyInput.value.trim();
+        if (!title || !body) {
+          alert('Judul dan isi pengumuman wajib diisi.');
+          return;
+        }
+        saveAnnouncement(title, body);
+        announcementForm.reset();
+        alert('Pengumuman berhasil ditambahkan.');
+      });
+    }
+
+    reportForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const location = document.getElementById('report-location').value.trim();
+      const description = document.getElementById('report-description').value.trim();
+      if (hasBadWords(location) || hasBadWords(description)) {
+        alert('Terdeteksi kata yang tidak pantas. Harap gunakan bahasa yang sopan dalam laporan.');
+        return;
+      }
+      const photoUrl = document.getElementById('report-photo').value.trim();
+      const report = {
+        type: document.getElementById('report-type').value,
+        location,
+        description,
+        photo: reportPhotoFileInput.dataset.photo || photoUrl,
+        date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
+        status: 'Menunggu tindak lanjut'
+      };
+      const reports = JSON.parse(localStorage.getItem(reportsKey) || '[]');
+      reports.push(report);
+      saveToStorage(reportsKey, reports);
+      renderWargaSummary(reports, showAllSummaryReports);
+      renderReportList(reports, adminReportList, true, false);
+      renderReportList(reports, adminResponseList, true, false);
+      renderCompletedReports();
+      reportForm.reset();
+      reportPhotoFileInput.dataset.photo = '';
+      alert('Laporan berhasil dikirim. Terima kasih atas partisipasinya!');
+    });
+
+    feedbackForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = document.getElementById('feedback-name').value.trim();
+      const message = document.getElementById('feedback-message').value.trim();
+      if (hasBadWords(name) || hasBadWords(message)) {
+        alert('Terdeteksi kata yang tidak pantas. Harap gunakan bahasa yang sopan dalam kritik dan saran.');
+        return;
+      }
+      const feedback = {
+        name,
+        topic: document.getElementById('feedback-topic').value,
+        message,
+        date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
+      };
+      const feedbacks = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+      feedbacks.push(feedback);
+      saveToStorage(feedbackKey, feedbacks);
+      renderFeedbackList(feedbacks);
+      renderFeedbackList(feedbacks, adminFeedbackList, true);
+      feedbackForm.reset();
+      alert('Kritik / saran berhasil dikirim. Terima kasih atas masukan Anda!');
+    });
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function () {
+        document.querySelectorAll('.nav-links a').forEach(item => item.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    if (!tryAutoLogin()) {
+      mainContent.classList.add('hidden');
+    }
+    loadStoredData();
+  </script>
+</body>
+</html>
