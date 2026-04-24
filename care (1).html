@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CARE — Community Against Rape & Exploitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<!-- =====================================================
+     CARE — Community Against Rape & Exploitation
+     Platform Perlindungan Siswa
+     
+     STRUKTUR FILE:
+     1. CSS VARIABLES & THEMING (Dark/Light mode)
+     2. CSS BASE & TYPOGRAPHY
+     3. CSS KOMPONEN — EMERGENCY BAR, LOGIN
+     4. CSS KOMPONEN — SIDEBAR, NAVIGASI
+     5. CSS KOMPONEN — KONTEN, KARTU, BADGE
+     6. CSS KOMPONEN — MATERI, INFO, ADMIN
+     7. CSS ANIMASI & RESPONSIVE
+     8. HTML — EMERGENCY BAR
+     9. HTML — LOGIN SCREEN
+     10. HTML — APP SHELL (Sidebar + Konten)
+         a. Sidebar Navigasi
+         b. Konten: Beranda, Buat Laporan, Laporan Saya
+         c. Konten: Aspirasi, Materi, Info
+         d. Konten: Latar Belakang, Cara Penggunaan, Studi Kasus
+         e. Konten: Panel Admin (Dashboard, Laporan, dll)
+     11. JAVASCRIPT — DATA & KONSTANTA
+     12. JAVASCRIPT — FUNGSI LOGIN & AUTENTIKASI
+     13. JAVASCRIPT — NAVIGASI HALAMAN
+     14. JAVASCRIPT — FORM SUBMISSION (Laporan & Aspirasi)
+     15. JAVASCRIPT — RENDER KOMPONEN (Kartu Laporan, Statistik)
+     16. JAVASCRIPT — AKSI ADMIN
+     17. JAVASCRIPT — MATERI EDUKASI
+     18. JAVASCRIPT — TEMA GELAP/TERANG
+     ===================================================== -->
+
+<style>
+/* =====================================================
+   1. CSS VARIABLES & THEMING
+   Mendukung dark mode dan light mode via data-theme
+   ===================================================== */
+:root {
+  /* Dark Theme (default) */
+  --bg: #0c0a0a;
+  --surface: #141010;
+  --surface2: #1c1717;
+  --surface3: #252020;
+  --surface4: #2e2828;
+
+  --rose: #e8324a;
+  --rose-dim: #b8243a;
+  --rose-light: #f06070;
+  --rose-glow: rgba(232,50,74,0.12);
+  --rose-glow2: rgba(232,50,74,0.06);
+
+  --teal: #2dd4bf;
+  --teal-dim: #0d9488;
+  --amber: #f59e0b;
+  --green: #22c55e;
+  --violet: #a78bfa;
+
+  --text: #f0eaea;
+  --text2: #9e8e8e;
+  --text3: #604e4e;
+  --text-inv: #0c0a0a;
+
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --border3: rgba(255,255,255,0.18);
+
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+
+  --r: 14px;
+  --rsm: 8px;
+  --rlg: 22px;
+  --rxl: 32px;
+
+  --sb-width: 256px;
+  --ebar-h: 40px;
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Light Theme — diaktifkan lewat JS toggle */
+[data-theme="light"] {
+  --bg: #f5f0ef;
+  --surface: #ffffff;
+  --surface2: #f0eaea;
+  --surface3: #e8dfdf;
+  --surface4: #ddd0d0;
+
+  --rose-glow: rgba(232,50,74,0.08);
+  --rose-glow2: rgba(232,50,74,0.04);
+
+  --text: #1a1010;
+  --text2: #5a4040;
+  --text3: #9a8080;
+  --text-inv: #ffffff;
+
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.12);
+  --border3: rgba(0,0,0,0.2);
+
+  --shadow: 0 4px 24px rgba(0,0,0,0.1);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* =====================================================
+   2. CSS BASE & TYPOGRAPHY
+   ===================================================== */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--rose-dim); border-radius: 99px; }
+
+h1, h2, h3, .display {
+  font-family: 'Cormorant Garamond', serif;
+  line-height: 1.2;
+}
+
+/* =====================================================
+   3. CSS KOMPONEN — EMERGENCY BAR (Sticky di paling atas)
+   ===================================================== */
+.ebar {
+  background: var(--rose);
+  color: #fff;
+  text-align: center;
+  padding: 0 16px;
+  height: var(--ebar-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  position: sticky;
+  top: 0;
+  z-index: 400;
+  box-shadow: 0 2px 16px rgba(232,50,74,0.4);
+}
+.ebar a { color: #ffe4e8; text-decoration: underline; transition: opacity var(--transition); }
+.ebar a:hover { opacity: 0.8; }
+.ebar-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* =====================================================
+   4. CSS KOMPONEN — LOGIN SCREEN
+   Layar login — tidak bisa di-scroll (overflow:hidden)
+   ===================================================== */
+#login-screen {
+  height: 100vh; /* Tinggi penuh layar */
+  overflow: hidden; /* TIDAK BISA SCROLL */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  background: var(--bg);
+}
+
+/* Latar belakang dekoratif login */
+.login-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.login-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+}
+.login-bg-circle:nth-child(1) {
+  width: 500px; height: 500px;
+  background: var(--rose);
+  top: -150px; right: -100px;
+}
+.login-bg-circle:nth-child(2) {
+  width: 300px; height: 300px;
+  background: var(--teal);
+  bottom: -80px; left: -60px;
+  opacity: 0.08;
+}
+
+/* Wrapper konten login */
+.login-wrap {
+  width: min(460px, 100%);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo header login */
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.login-icon {
+  width: 52px; height: 52px;
+  background: var(--rose);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 0 40px rgba(232,50,74,0.5);
+  flex-shrink: 0;
+}
+.login-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.login-brand-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+/* Kartu form login */
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--rxl);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-lg);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* Tab Siswa / Admin di login */
+.tab-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 22px;
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.tab-btn.active {
+  background: var(--rose);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(232,50,74,0.35);
+}
+.tp { display: none; }
+.tp.active { display: block; }
+
+/* Notifikasi keamanan di login */
+.safe-note {
+  background: rgba(45,212,191,0.08);
+  border: 1px solid rgba(45,212,191,0.2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 12.5px;
+  color: #5de8d8;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+/* =====================================================
+   CSS FORM — Input, Label, Button (dipakai di login & laporan)
+   ===================================================== */
+.fg { margin-bottom: 14px; }
+.fg label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 7px;
+}
+.fg input, .fg select, .fg textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--rsm);
+  padding: 11px 14px;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  outline: none;
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(232,50,74,0.12);
+}
+.fg input::placeholder, .fg textarea::placeholder { color: var(--text3); }
+.fg select option { background: var(--surface2); color: var(--text); }
+.fg textarea { min-height: 100px; resize: vertical; }
+.fg .hint { font-size: 11.5px; color: var(--text3); margin-top: 5px; }
+
+/* Tombol Primary (merah) */
+.btn-p {
+  width: 100%;
+  background: var(--rose);
+  color: #fff;
+  border: none;
+  border-radius: var(--rsm);
+  padding: 13px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 20px rgba(232,50,74,0.3);
+}
+.btn-p:hover { background: var(--rose-dim); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(232,50,74,0.4); }
+
+/* Tombol Ghost (transparan + border) */
+.btn-g {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  border-radius: var(--rsm);
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-g:hover { background: var(--surface3); color: var(--text); }
+
+/* Tombol Outline Rose */
+.btn-ro {
+  background: transparent;
+  color: var(--rose);
+  border: 1px solid rgba(232,50,74,0.35);
+  border-radius: var(--rsm);
+  padding: 7px 14px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-ro:hover { background: var(--rose-glow); border-color: var(--rose); }
+
+/* Checkbox anonim */
+.anon-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.anon-toggle:hover { border-color: var(--border2); }
+.anon-toggle label { font-size: 13px; font-weight: 600; color: var(--text2); cursor: pointer; }
+.anon-toggle input[type=checkbox] { accent-color: var(--rose); width: 15px; height: 15px; cursor: pointer; }
+
+/* =====================================================
+   5. CSS KOMPONEN — SIDEBAR & NAVIGASI
+   ===================================================== */
+#app { display: none; min-height: 100vh; }
+
+.app-shell {
+  display: flex;
+  min-height: calc(100vh - var(--ebar-h));
+  margin-left: var(--sb-width);
+}
+
+/* Sidebar — panel navigasi kiri */
+.sb {
+  width: var(--sb-width);
+  min-width: var(--sb-width);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: var(--ebar-h);
+  left: 0;
+  height: calc(100vh - var(--ebar-h));
+  overflow: hidden;
+  z-index: 200;
+  transition: background var(--transition), border-color var(--transition), left 0.3s ease;
+}
+
+/* Header sidebar — logo CARE */
+.sb-head {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sb-brand { display: flex; align-items: center; gap: 11px; }
+.sb-icon {
+  width: 38px; height: 38px;
+  background: var(--rose);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(232,50,74,0.35);
+  flex-shrink: 0;
+}
+.sb-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.sb-sub { font-size: 9.5px; color: var(--text3); font-weight: 400; letter-spacing: 0.04em; margin-top: 1px; }
+
+/* Badge peran pengguna di sidebar */
+.sb-role {
+  margin: 10px 18px 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-block;
+}
+.sb-role.w { background: rgba(45,212,191,0.1); color: #5de8d8; border: 1px solid rgba(45,212,191,0.15); }
+.sb-role.a { background: rgba(245,158,11,0.1); color: #f8c44e; border: 1px solid rgba(245,158,11,0.15); }
+
+/* Area navigasi sidebar — scrollable */
+.sb-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+.ns { margin-bottom: 16px; }
+.nsl {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  padding: 0 10px;
+  margin-bottom: 4px;
+}
+
+/* Item navigasi sidebar */
+.ni {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--text2);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.ni:hover { background: var(--surface2); color: var(--text); }
+.ni.active {
+  background: var(--rose-glow);
+  color: var(--rose);
+  font-weight: 700;
+  border-color: rgba(232,50,74,0.18);
+}
+.ni .ic { width: 18px; font-size: 14px; text-align: center; flex-shrink: 0; }
+
+/* Badge notifikasi di item navigasi */
+.ni .nb {
+  margin-left: auto;
+  background: var(--rose);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Footer sidebar — tombol keluar & tema */
+.sb-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Tombol toggle tema gelap/terang */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.theme-toggle:hover { border-color: var(--border2); }
+.theme-toggle span { font-size: 12.5px; font-weight: 600; color: var(--text2); }
+.toggle-track {
+  width: 36px; height: 20px;
+  background: var(--surface3);
+  border-radius: 99px;
+  position: relative;
+  transition: background var(--transition);
+  border: 1px solid var(--border2);
+}
+.toggle-track.on { background: var(--rose); }
+.toggle-thumb {
+  width: 14px; height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform var(--transition);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-track.on .toggle-thumb { transform: translateX(16px); }
+
+.lo-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 9px 13px;
+  color: var(--text2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.lo-btn:hover { background: var(--surface2); color: var(--text); }
+
+/* =====================================================
+   6. CSS KOMPONEN — KONTEN UTAMA
+   ===================================================== */
+.cnt {
+  flex: 1;
+  padding: 36px 40px;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--ebar-h));
+}
+
+/* Halaman — animasi masuk */
+.pg { display: none; animation: pageIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+.pg.active { display: block; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header setiap halaman */
+.ph { margin-bottom: 28px; }
+.ph h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.ph h1 em { color: var(--rose); font-style: italic; }
+.ph p { color: var(--text2); font-size: 14px; max-width: 600px; margin-top: 8px; }
+
+/* Kartu dasar */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px;
+  transition: background var(--transition), border-color var(--transition);
+}
+.card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.card > p { color: var(--text2); font-size: 13.5px; margin-bottom: 16px; }
+
+/* Grid layout */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* =====================================================
+   CSS KOMPONEN — STATISTIK ADMIN
+   ===================================================== */
+.sr { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+
+/* Kartu statistik dengan warna garis atas */
+.sb2 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: background var(--transition), border-color var(--transition);
+}
+.sb2::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--rose);
+  border-radius: 3px 3px 0 0;
+}
+.sb2.t::before { background: var(--teal); }
+.sb2.am::before { background: var(--amber); }
+.sb2.gr::before { background: var(--green); }
+.slb { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 8px; }
+.sv { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--text); font-weight: 700; line-height: 1; }
+.ss { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+/* Info box keamanan (teal) */
+.sfb {
+  background: rgba(45,212,191,0.07);
+  border: 1px solid rgba(45,212,191,0.18);
+  border-radius: var(--rsm);
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: #7de8de;
+  margin-bottom: 20px;
+}
+
+/* =====================================================
+   CSS KOMPONEN — KARTU LAPORAN (dipakai user & admin)
+   ===================================================== */
+.is { display: flex; flex-direction: column; gap: 12px; }
+
+.rc {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.rc:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+
+.rct { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.rcti { font-weight: 700; font-size: 14px; color: var(--text); line-height: 1.4; }
+.rcl { font-size: 12.5px; color: var(--text3); margin-top: 3px; }
+.rcd { font-size: 13.5px; color: var(--text2); margin: 10px 0; line-height: 1.65; }
+.rcf { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.rdate { font-size: 11.5px; color: var(--text3); }
+
+/* Blok tanggapan admin dalam kartu laporan */
+.resp-blk {
+  background: rgba(45,212,191,0.06);
+  border: 1px solid rgba(45,212,191,0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+.resp-blk strong {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--teal-dim);
+  margin-bottom: 4px;
+}
+.resp-blk p { font-size: 13px; color: #9de8de; }
+
+/* =====================================================
+   CSS KOMPONEN — BADGE STATUS
+   ===================================================== */
+.bdg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bdg::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.bdg.p   { background: rgba(245,158,11,0.12); color: #f8c44e; }
+.bdg.p::before   { background: var(--amber); }
+.bdg.s   { background: rgba(59,130,246,0.1); color: #93c5fd; }
+.bdg.s::before   { background: #3b82f6; }
+.bdg.pr  { background: rgba(249,115,22,0.1); color: #fdba74; }
+.bdg.pr::before  { background: #f97316; }
+.bdg.d   { background: rgba(45,212,191,0.1); color: #5de8d8; }
+.bdg.d::before   { background: var(--teal); }
+.bdg.del { background: rgba(255,255,255,0.05); color: var(--text3); }
+.bdg.del::before { background: var(--text3); }
+
+/* =====================================================
+   CSS KOMPONEN — PANEL KONTROL ADMIN (dalam kartu laporan)
+   ===================================================== */
+.ac {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+}
+.ac label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.ac select, .ac input, .ac textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  transition: border-color var(--transition);
+  margin-bottom: 12px;
+}
+.ac select:focus, .ac input:focus, .ac textarea:focus {
+  outline: none;
+  border-color: var(--rose);
+}
+.ac select option { background: var(--surface2); }
+.ac textarea { min-height: 80px; resize: vertical; }
+.acr { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* =====================================================
+   CSS KOMPONEN — PROGRESS BAR (statistik admin)
+   ===================================================== */
+.pb { margin-bottom: 14px; }
+.pbl { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
+.pbt { background: var(--surface3); border-radius: 99px; height: 6px; overflow: hidden; }
+.pbf { background: var(--rose); height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px dashed var(--border2);
+  border-radius: var(--r);
+  font-size: 14px;
+}
+.empty .ei { font-size: 28px; margin-bottom: 10px; opacity: 0.4; display: block; }
+
+/* =====================================================
+   CSS KOMPONEN — MATERI EDUKASI
+   ===================================================== */
+.mhero {
+  background: linear-gradient(135deg, rgba(232,50,74,0.1) 0%, transparent 60%);
+  border: 1px solid rgba(232,50,74,0.15);
+  border-radius: var(--rlg);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+.mhero h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 8px; }
+.mhero p { color: var(--text2); font-size: 14px; max-width: 600px; line-height: 1.7; }
+
+.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+/* Kartu materi — klik untuk baca detail */
+.mc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0;
+  overflow: hidden;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  cursor: pointer;
+}
+.mc:hover { border-color: var(--rose); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.mca { height: 4px; }
+.mcb { padding: 22px 22px 18px; }
+.mci { font-size: 24px; margin-bottom: 10px; }
+.mct { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--text); margin-bottom: 7px; }
+.mcd { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 12px; }
+.mctags { display: flex; gap: 6px; flex-wrap: wrap; }
+.mtag { background: var(--surface3); color: var(--text3); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; }
+
+/* Detail materi — tampil setelah klik kartu */
+.mdetail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rlg);
+  padding: 32px;
+  display: none;
+  animation: pageIn 0.25s ease;
+  transition: background var(--transition);
+}
+.mdetail.active { display: block; }
+.mbk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 24px;
+  padding: 0;
+  transition: color var(--transition);
+}
+.mbk:hover { color: var(--text); }
+.mdetail h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; color: var(--text); margin-bottom: 12px; }
+.mdetail p { color: var(--text2); font-size: 14px; line-height: 1.8; margin-bottom: 14px; }
+.mdetail ul, .mdetail ol { color: var(--text2); font-size: 14px; padding-left: 22px; margin-bottom: 16px; }
+.mdetail li { margin-bottom: 8px; line-height: 1.7; }
+.mdetail h3 { font-family: 'Cormorant Garamond', serif; color: var(--rose); font-size: 1.1rem; margin: 24px 0 10px; }
+
+/* Box peringatan dalam materi */
+.wbox {
+  background: rgba(232,50,74,0.07);
+  border: 1px solid rgba(232,50,74,0.18);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+.wbox p { color: #f4a0ab; font-size: 13.5px; margin: 0; }
+
+/* Box info positif dalam materi */
+.tbox {
+  background: rgba(45,212,191,0.07);
+  border: 1px solid rgba(45,212,191,0.18);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+.tbox p { color: #7de8de; font-size: 13.5px; margin: 0; }
+
+/* =====================================================
+   CSS KOMPONEN — HALAMAN INFO KONTAK
+   ===================================================== */
+.hl-card {
+  background: linear-gradient(135deg, rgba(232,50,74,0.1) 0%, transparent 80%);
+  border: 1px solid rgba(232,50,74,0.2);
+  border-radius: var(--r);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.hl-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; color: var(--rose); font-weight: 700; }
+.hl-lbl { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+.ci { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.ci h4 { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.ci p { font-size: 12.5px; color: var(--text2); }
+.ci .cn { color: var(--rose); font-weight: 700; font-size: 14px; }
+
+/* =====================================================
+   CSS KOMPONEN — ASPIRASI / FEEDBACK
+   ===================================================== */
+.fbc { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; }
+.fbt { display: inline-block; background: rgba(232,50,74,0.12); color: #f4a0ab; border-radius: 6px; font-size: 11.5px; font-weight: 700; padding: 3px 10px; margin-bottom: 8px; }
+.fbm { font-size: 13.5px; color: var(--text2); margin-bottom: 8px; line-height: 1.65; }
+.fbmt { font-size: 11.5px; color: var(--text3); }
+
+/* =====================================================
+   CSS KOMPONEN — HALAMAN BARU: LATAR BELAKANG
+   ===================================================== */
+.bg-hero {
+  background: linear-gradient(135deg, rgba(232,50,74,0.08) 0%, rgba(45,212,191,0.04) 100%);
+  border: 1px solid rgba(232,50,74,0.15);
+  border-radius: var(--rxl);
+  padding: 40px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.bg-hero::before {
+  content: '"';
+  position: absolute;
+  top: -20px; right: 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 120px;
+  color: var(--rose);
+  opacity: 0.08;
+  line-height: 1;
+}
+.stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 28px 0; }
+.stat-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  text-align: center;
+  transition: background var(--transition);
+}
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--rose); }
+.stat-lbl { font-size: 12.5px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+
+/* =====================================================
+   CSS KOMPONEN — HALAMAN BARU: CARA PENGGUNAAN
+   ===================================================== */
+.step-list { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
+.step-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  transition: border-color var(--transition), background var(--transition);
+}
+.step-item:hover { border-color: var(--border2); }
+.step-num {
+  width: 36px; height: 36px;
+  background: var(--rose);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(232,50,74,0.3);
+}
+.step-content h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.step-content p { font-size: 13.5px; color: var(--text2); line-height: 1.65; }
+
+/* =====================================================
+   CSS KOMPONEN — HALAMAN BARU: STUDI KASUS
+   ===================================================== */
+.case-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: border-color var(--transition), background var(--transition);
+}
+.case-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.case-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.case-body { padding: 20px 24px; }
+.case-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--text); margin-bottom: 10px; }
+.case-body p { font-size: 13.5px; color: var(--text2); line-height: 1.75; margin-bottom: 12px; }
+.case-outcome {
+  background: rgba(34,197,94,0.07);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 14px;
+}
+.case-outcome strong { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #4ade80; margin-bottom: 4px; }
+.case-outcome p { font-size: 13px; color: #86efac; margin: 0; }
+.case-warning {
+  background: rgba(232,50,74,0.07);
+  border: 1px solid rgba(232,50,74,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: #f4a0ab;
+}
+
+/* =====================================================
+   CSS KOMPONEN — MOBILE HEADER
+   ===================================================== */
+.mob-head {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: var(--ebar-h);
+  z-index: 100;
+}
+.ham {
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 16px;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 140;
+  backdrop-filter: blur(4px);
+}
+.overlay.on { display: block; }
+
+/* =====================================================
+   7. CSS ANIMASI & RESPONSIVE
+   ===================================================== */
+@media (max-width: 960px) {
+  .sb {
+    position: fixed;
+    left: -280px;
+    top: var(--ebar-h);
+    z-index: 150;
+    height: calc(100vh - var(--ebar-h));
+    width: 260px;
+    transition: left 0.3s ease;
+  }
+  .sb.open { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.6); }
+  .app-shell { margin-left: 0; }
+  .mob-head { display: flex; }
+  .cnt { padding: 24px 20px; max-height: none; }
+  .sr { grid-template-columns: 1fr 1fr; }
+  .g2, .g3, .mgrid, .acr, .stat-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .sr { grid-template-columns: 1fr 1fr; }
+  .login-card { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================
+     8. HTML — EMERGENCY BAR
+     Selalu terlihat di atas layar, link ke hotline darurat
+     ===================================================== -->
+<div class="ebar">
+  <div class="ebar-pulse"></div>
+  <span>Darurat? Hubungi <strong>Hotline SAPA: 1500-454</strong> &mdash; <a href="#">Komnas Perempuan: 021-3903963</a></span>
+</div>
+
+<!-- =====================================================
+     9. HTML — LOGIN SCREEN
+     Tidak bisa di-scroll (overflow:hidden di CSS)
+     ===================================================== -->
+<div id="login-screen">
+  <!-- Dekorasi latar belakang -->
+  <div class="login-bg">
+    <div class="login-bg-circle"></div>
+    <div class="login-bg-circle"></div>
+  </div>
+
+  <div class="login-wrap">
+    <!-- Logo & nama platform -->
+    <div class="login-logo">
+      <div class="login-icon">C</div>
+      <div>
+        <div class="login-brand-name">CARE</div>
+        <div class="login-brand-sub">Community Against Rape &amp; Exploitation</div>
+      </div>
+    </div>
+
+    <!-- Kartu login -->
+    <div class="login-card">
+      <div style="margin-bottom:20px">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--text);margin-bottom:5px">Selamat Datang</h2>
+        <p style="font-size:13px;color:var(--text2);line-height:1.65">Platform aman &amp; rahasia untuk melaporkan dan belajar tentang pelecehan seksual di lingkungan sekolah.</p>
+      </div>
+
+      <!-- Tab pilih peran -->
+      <div class="tab-row">
+        <button class="tab-btn active" data-t="w">&#128100; Siswa / Korban</button>
+        <button class="tab-btn" data-t="a">&#9878; Staf / Admin</button>
+      </div>
+
+      <!-- Form login siswa -->
+      <div id="tp-w" class="tp active">
+        <div class="safe-note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Identitas Anda <strong>dijaga sepenuhnya</strong>. Boleh gunakan nama samaran.</span>
+        </div>
+        <form id="wf">
+          <div class="fg">
+            <label>Nama atau Nama Samaran</label>
+            <input id="wn" type="text" placeholder="Contoh: Anisa / Anonim" required/>
+            <div class="hint">Nama ini hanya untuk komunikasi internal yang aman.</div>
+          </div>
+          <button type="submit" class="btn-p">&#128274; Masuk dengan Aman</button>
+        </form>
+      </div>
+
+      <!-- Form login admin -->
+      <div id="tp-a" class="tp">
+        <form id="af">
+          <div class="fg">
+            <label>Username</label>
+            <input id="au" type="text" placeholder="admin" required/>
+          </div>
+          <div class="fg">
+            <label>Password</label>
+            <input id="ap" type="password" placeholder="••••••••" required/>
+          </div>
+          <button type="submit" class="btn-p">Masuk sebagai Staf</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay untuk tutup sidebar di mobile -->
+<div class="overlay" id="ovl" onclick="closeSb()"></div>
+
+<!-- =====================================================
+     10. HTML — APP SHELL
+     Tampil setelah login berhasil
+     ===================================================== -->
+<div id="app">
+  <!-- Mobile Header -->
+  <div class="mob-head">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="sb-icon" style="width:32px;height:32px;font-size:14px">C</div>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">CARE</span>
+    </div>
+    <button class="ham" onclick="openSb()">&#9776;</button>
+  </div>
+
+  <div class="app-shell">
+
+    <!-- =====================================================
+         10a. HTML — SIDEBAR NAVIGASI
+         ===================================================== -->
+    <aside class="sb" id="sb">
+      <div class="sb-head">
+        <div class="sb-brand">
+          <div class="sb-icon">C</div>
+          <div>
+            <div class="sb-title">CARE</div>
+            <div class="sb-sub">Against Rape &amp; Exploitation</div>
+          </div>
+        </div>
+        <div class="sb-role w" id="rl">&#128100; Siswa</div>
+      </div>
+
+      <nav class="sb-nav">
+        <!-- Navigasi umum (semua pengguna) -->
+        <div class="ns">
+          <div class="nsl">Utama</div>
+          <button class="ni active" data-p="beranda"><span class="ic">&#127968;</span> Beranda</button>
+        </div>
+
+        <!-- Navigasi khusus SISWA — disembunyikan untuk admin -->
+        <div class="ns" id="nw" style="display:none">
+          <div class="nsl">Pelaporan</div>
+          <button class="ni" data-p="laporan"><span class="ic">&#128221;</span> Buat Laporan</button>
+          <button class="ni" data-p="lsaya"><span class="ic">&#128196;</span> Laporan Saya</button>
+          <button class="ni" data-p="aspirasi"><span class="ic">&#128172;</span> Aspirasi &amp; Saran</button>
+        </div>
+
+        <!-- Navigasi edukasi & info (semua pengguna) -->
+        <div class="ns">
+          <div class="nsl">Edukasi &amp; Info</div>
+          <button class="ni" data-p="latarbelakang"><span class="ic">&#128218;</span> Latar Belakang</button>
+          <button class="ni" data-p="carauguna"><span class="ic">&#128295;</span> Cara Penggunaan</button>
+          <button class="ni" data-p="studikasus"><span class="ic">&#128269;</span> Studi Kasus</button>
+          <button class="ni" data-p="materi"><span class="ic">&#128218;</span> Materi Edukasi</button>
+          <button class="ni" data-p="info"><span class="ic">&#128222;</span> Bantuan &amp; Kontak</button>
+        </div>
+
+        <!-- Navigasi khusus ADMIN — disembunyikan untuk siswa -->
+        <div class="ns" id="na" style="display:none">
+          <div class="nsl">Panel Admin</div>
+          <button class="ni" data-p="dashboard"><span class="ic">&#128202;</span> Dashboard</button>
+          <button class="ni" data-p="alin"><span class="ic">&#128197;</span> Laporan Masuk <span class="nb" id="nbdg" style="display:none">0</span></button>
+          <button class="ni" data-p="atl"><span class="ic">&#9881;</span> Tindak Lanjut</button>
+          <button class="ni" data-p="aselesai"><span class="ic">&#9989;</span> Selesai</button>
+          <button class="ni" data-p="aasp"><span class="ic">&#128172;</span> Aspirasi Masuk</button>
+        </div>
+      </nav>
+
+      <div class="sb-foot">
+        <!-- Toggle tema gelap/terang -->
+        <div class="theme-toggle" onclick="toggleTheme()" title="Ubah tema">
+          <span id="theme-label">&#9790; Mode Gelap</span>
+          <div class="toggle-track" id="toggle-track">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <!-- Tombol keluar -->
+        <button class="lo-btn" id="lobtn">&#8592; Keluar</button>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         10b. HTML — AREA KONTEN HALAMAN
+         ===================================================== -->
+    <main class="cnt" id="cnt">
+
+      <!-- HALAMAN: BERANDA -->
+      <div class="pg active" id="pg-beranda">
+        <div class="ph">
+          <h1>Selamat Datang di <em>CARE</em></h1>
+          <p id="bd-desc">Platform perlindungan siswa dari pelecehan seksual di lingkungan sekolah — aman, rahasia, dan terpercaya.</p>
+        </div>
+
+        <!-- Hero banner beranda -->
+        <div style="background:linear-gradient(135deg,rgba(232,50,74,0.12) 0%,rgba(232,50,74,0.03) 100%);border:1px solid rgba(232,50,74,0.18);border-radius:var(--rxl);padding:36px;margin-bottom:28px">
+          <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--rose);margin-bottom:12px">&#128274; Aman &bull; Rahasia &bull; Terpercaya</div>
+              <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--text);margin-bottom:14px;line-height:1.15">Suaramu penting.<br/><em style="color:var(--rose)">Kami mendengarkan.</em></h2>
+              <p style="color:var(--text2);font-size:14px;line-height:1.75;margin-bottom:20px">Jika kamu mengalami atau menyaksikan pelecehan seksual di sekolah, kamu bisa melaporkannya di sini. Identitasmu dijaga sepenuhnya.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn-p" style="width:auto;padding:12px 22px" onclick="showPg('laporan')" id="hero-lapor">&#43; Buat Laporan</button>
+                <button class="btn-g" onclick="showPg('latarbelakang')">Pelajari CARE</button>
+              </div>
+            </div>
+            <!-- Grid jenis pelecehan -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:180px">
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:22px;margin-bottom:6px">&#128721;</div><div style="font-size:11.5px;font-weight:600;color:var(--text2)">Verbal</div></div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:22px;margin-bottom:6px">&#128187;</div><div style="font-size:11.5px;font-weight:600;color:var(--text2)">Online</div></div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:22px;margin-bottom:6px">&#9888;&#65039;</div><div style="font-size:11.5px;font-weight:600;color:var(--text2)">Fisik</div></div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:22px;margin-bottom:6px">&#128100;</div><div style="font-size:11.5px;font-weight:600;color:var(--text2)">Intimidasi</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 fitur utama -->
+        <div class="g3">
+          <div class="card" style="border-color:rgba(232,50,74,0.2)">
+            <div style="font-size:26px;margin-bottom:12px">&#128274;</div>
+            <h3>100% Rahasia</h3>
+            <p>Identitasmu tidak akan pernah diungkap tanpa persetujuanmu.</p>
+          </div>
+          <div class="card">
+            <div style="font-size:26px;margin-bottom:12px">&#9889;</div>
+            <h3>Cepat Ditangani</h3>
+            <p>Tim terlatih akan menindaklanjuti setiap laporan secara serius.</p>
+          </div>
+          <div class="card">
+            <div style="font-size:26px;margin-bottom:12px">&#128218;</div>
+            <h3>Edukasi Lengkap</h3>
+            <p>Pelajari tentang pelecehan seksual, ciri-ciri, dan cara melindungi diri.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           10c. HTML — HALAMAN SISWA: BUAT LAPORAN
+           ===================================================== -->
+      <div class="pg" id="pg-laporan">
+        <div class="ph">
+          <h1>Buat <em>Laporan</em></h1>
+          <p>Semua informasi bersifat rahasia dan hanya diakses oleh staf berwenang.</p>
+        </div>
+        <div class="sfb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Laporanmu bersifat <strong>rahasia penuh</strong>. Identitasmu tidak akan diungkap kepada siapapun.</span>
+        </div>
+        <div class="card">
+          <form id="rf">
+            <div class="anon-toggle">
+              <input type="checkbox" id="anon"/>
+              <label for="anon">&#128373;&#65039; Laporan secara <strong>Anonim</strong> (nama tidak dicantumkan)</label>
+            </div>
+            <div class="g2">
+              <div class="fg">
+                <label>Jenis Kejadian *</label>
+                <select id="rtype" required>
+                  <option value="">Pilih jenis...</option>
+                  <option>Pelecehan Verbal (kata-kata tidak pantas)</option>
+                  <option>Pelecehan Fisik (sentuhan tidak diinginkan)</option>
+                  <option>Pelecehan Online / Siber</option>
+                  <option>Intimidasi / Ancaman Seksual</option>
+                  <option>Ekshibisionisme / Voyeurisme</option>
+                  <option>Kekerasan Seksual (butuh penanganan segera)</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label>Lokasi Kejadian *</label>
+                <input id="rloc" type="text" placeholder="Contoh: Toilet lantai 2, Ruang kelas..." required/>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Terlapor (opsional)</label>
+              <input id="rpelaku" type="text" placeholder="Cukup sebutkan perannya jika tidak ingin menyebut nama..."/>
+              <div class="hint">Contoh: "Siswa kelas X", "Guru Olahraga"</div>
+            </div>
+            <div class="fg">
+              <label>Ceritakan Kejadiannya *</label>
+              <textarea id="rdesc" placeholder="Ceritakan detail apa yang terjadi, kapan, dan bagaimana perasaanmu..." required></textarea>
+            </div>
+            <div class="g2">
+              <div class="fg">
+                <label>Link Bukti Digital (opsional)</label>
+                <input id="rlink" type="url" placeholder="https://..."/>
+              </div>
+              <div class="fg">
+                <label>Upload Bukti (opsional)</label>
+                <input id="rfile" type="file" accept="image/*,video/*"/>
+                <div class="hint">Foto, screenshot, atau rekaman.</div>
+              </div>
+            </div>
+            <button type="submit" class="btn-p">&#9993; Kirim Laporan dengan Aman</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- HALAMAN SISWA: LAPORAN SAYA -->
+      <div class="pg" id="pg-lsaya">
+        <div class="ph">
+          <h1>Laporan <em>Saya</em></h1>
+          <p>Status dan perkembangan laporan yang telah kamu kirimkan.</p>
+        </div>
+        <div class="card" style="margin-bottom:20px">
+          <h3>Laporan Aktif</h3>
+          <p>Laporan yang sedang dalam proses penanganan.</p>
+          <div class="is" id="w-active"><div class="empty"><span class="ei">&#128196;</span>Belum ada laporan aktif.</div></div>
+        </div>
+        <div class="card">
+          <h3>Laporan Selesai</h3>
+          <p>Laporan yang telah selesai ditindaklanjuti.</p>
+          <div class="is" id="w-done"><div class="empty"><span class="ei">&#9989;</span>Belum ada laporan selesai.</div></div>
+        </div>
+      </div>
+
+      <!-- HALAMAN SISWA: ASPIRASI & SARAN -->
+      <div class="pg" id="pg-aspirasi">
+        <div class="ph">
+          <h1>Aspirasi <em>&amp; Saran</em></h1>
+          <p>Sampaikan masukan untuk meningkatkan keamanan dan kebijakan sekolah.</p>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <h3>Kirim Aspirasi</h3>
+            <p>Semua aspirasi bersifat rahasia dan akan ditinjau oleh tim.</p>
+            <form id="fbf">
+              <div class="fg"><label>Nama (opsional)</label><input id="fbn" type="text" placeholder="Bisa dikosongkan untuk anonim"/></div>
+              <div class="fg">
+                <label>Topik *</label>
+                <select id="fbt" required>
+                  <option value="">Pilih topik...</option>
+                  <option>Kebijakan &amp; Aturan Sekolah</option>
+                  <option>Prosedur Penanganan Kasus</option>
+                  <option>Keamanan Fasilitas Sekolah</option>
+                  <option>Program Edukasi &amp; Sosialisasi</option>
+                  <option>Dukungan Psikologis Siswa</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+              <div class="fg"><label>Pesan *</label><textarea id="fbm" placeholder="Tuliskan aspirasi atau saranmu..." required></textarea></div>
+              <button type="submit" class="btn-p">Kirim Aspirasi</button>
+            </form>
+          </div>
+          <div class="card">
+            <h3>Riwayat Aspirasi</h3>
+            <p>Aspirasi yang telah kamu kirimkan.</p>
+            <div class="is" id="w-fb"><div class="empty"><span class="ei">&#128172;</span>Belum ada aspirasi.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           10d. HTML — HALAMAN BARU: LATAR BELAKANG
+           ===================================================== -->
+      <div class="pg" id="pg-latarbelakang">
+        <div class="ph">
+          <h1>Latar <em>Belakang</em></h1>
+          <p>Mengapa platform CARE hadir dan apa yang melatarbelakangi pembentukannya.</p>
+        </div>
+
+        <div class="bg-hero">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--rose);margin-bottom:14px">Tentang CARE</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--text);margin-bottom:14px;line-height:1.2">Setiap siswa berhak belajar<br/>dalam lingkungan yang <em style="color:var(--rose)">aman</em>.</h2>
+          <p style="color:var(--text2);font-size:14px;line-height:1.8;max-width:680px">CARE (Community Against Rape &amp; Exploitation) lahir dari keprihatinan mendalam terhadap maraknya kasus pelecehan seksual di lingkungan pendidikan Indonesia yang kerap tidak dilaporkan, tidak ditangani, dan tidak diselesaikan dengan baik — meninggalkan luka jangka panjang pada para korbannya.</p>
+        </div>
+
+        <!-- Statistik nasional -->
+        <div class="card" style="margin-bottom:20px">
+          <h3>Fakta &amp; Data Nasional</h3>
+          <p>Gambaran nyata permasalahan pelecehan seksual di lingkungan pendidikan Indonesia.</p>
+          <div class="stat-row">
+            <div class="stat-item">
+              <div class="stat-num">1 dari 3</div>
+              <div class="stat-lbl">Perempuan Indonesia pernah mengalami kekerasan seksual (Komnas Perempuan, 2021)</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">73%</div>
+              <div class="stat-lbl">Kasus pelecehan seksual di sekolah <strong>tidak pernah dilaporkan</strong> secara resmi</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">4.500+</div>
+              <div class="stat-lbl">Kasus kekerasan seksual di lembaga pendidikan yang tercatat KPAI (2020–2023)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <h3>Mengapa Korban Tidak Melapor?</h3>
+            <p>Hambatan utama yang membuat korban memilih diam.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--rose);font-size:16px;flex-shrink:0">&#10007;</span>
+                <span style="color:var(--text2);font-size:13.5px">Takut tidak dipercaya oleh guru atau orang tua</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--rose);font-size:16px;flex-shrink:0">&#10007;</span>
+                <span style="color:var(--text2);font-size:13.5px">Malu dan takut dikucilkan oleh teman sebaya</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--rose);font-size:16px;flex-shrink:0">&#10007;</span>
+                <span style="color:var(--text2);font-size:13.5px">Tidak tahu ke mana harus melapor atau prosedurnya</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--rose);font-size:16px;flex-shrink:0">&#10007;</span>
+                <span style="color:var(--text2);font-size:13.5px">Takut pelaku adalah orang berkuasa (guru, senior)</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--rose);font-size:16px;flex-shrink:0">&#10007;</span>
+                <span style="color:var(--text2);font-size:13.5px">Budaya "jangan mempermalukan sekolah"</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Misi CARE</h3>
+            <p>Yang ingin kami wujudkan melalui platform ini.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--green);font-size:16px;flex-shrink:0">&#10003;</span>
+                <span style="color:var(--text2);font-size:13.5px">Menyediakan saluran pelaporan yang <strong>aman, cepat, dan anonim</strong></span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--green);font-size:16px;flex-shrink:0">&#10003;</span>
+                <span style="color:var(--text2);font-size:13.5px">Meningkatkan literasi siswa tentang pelecehan seksual</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--green);font-size:16px;flex-shrink:0">&#10003;</span>
+                <span style="color:var(--text2);font-size:13.5px">Memastikan setiap laporan ditangani secara profesional</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--green);font-size:16px;flex-shrink:0">&#10003;</span>
+                <span style="color:var(--text2);font-size:13.5px">Mendukung pemulihan korban dengan sumber daya yang tepat</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="color:var(--green);font-size:16px;flex-shrink:0">&#10003;</span>
+                <span style="color:var(--text2);font-size:13.5px">Mendorong kebijakan sekolah yang berpihak pada korban</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dasar hukum -->
+        <div class="card" style="margin-top:20px">
+          <h3>Landasan Hukum</h3>
+          <p>CARE beroperasi berdasarkan regulasi perlindungan yang berlaku di Indonesia.</p>
+          <div class="g3" style="margin-top:12px">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">UU No. 12 / 2022</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px">UU Tindak Pidana Kekerasan Seksual</div>
+              <p style="font-size:12.5px;color:var(--text2);margin:0">Memberikan definisi luas dan perlindungan hukum komprehensif bagi korban kekerasan seksual.</p>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Permendikbudristek 30/2021</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px">Pencegahan Kekerasan Seksual di Pendidikan</div>
+              <p style="font-size:12.5px;color:var(--text2);margin:0">Kewajiban lembaga pendidikan dalam pencegahan dan penanganan kekerasan seksual.</p>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">UU Perlindungan Anak</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px">UU No. 35 Tahun 2014</div>
+              <p style="font-size:12.5px;color:var(--text2);margin:0">Perlindungan khusus bagi korban yang masih di bawah umur dari segala bentuk eksploitasi.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           10e. HTML — HALAMAN BARU: CARA PENGGUNAAN
+           ===================================================== -->
+      <div class="pg" id="pg-carauguna">
+        <div class="ph">
+          <h1>Cara <em>Penggunaan</em></h1>
+          <p>Panduan langkah demi langkah untuk menggunakan platform CARE secara efektif.</p>
+        </div>
+
+        <div class="g2" style="margin-bottom:24px">
+          <!-- Panduan untuk siswa -->
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+              <div style="width:32px;height:32px;background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">&#128100;</div>
+              <h3 style="margin-bottom:0">Untuk Siswa</h3>
+            </div>
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h4>Daftar atau Masuk</h4>
+                  <p>Masukkan nama atau nama samaran. Tidak perlu password — identitasmu cukup dijaga dengan nama pilihanmu sendiri.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h4>Pelajari Materi Dulu (Opsional)</h4>
+                  <p>Baca materi edukasi untuk memahami apa yang termasuk pelecehan seksual dan apa hak-hakmu sebagai korban.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h4>Buat Laporan</h4>
+                  <p>Klik "Buat Laporan", isi formulir dengan sejelas mungkin. Pilih "Anonim" jika tidak ingin namamu dicantumkan.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <h4>Pantau Status Laporan</h4>
+                  <p>Di menu "Laporan Saya", kamu bisa melihat perkembangan laporanmu dan membaca tanggapan dari tim.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                  <h4>Sampaikan Aspirasi</h4>
+                  <p>Punya masukan untuk kebijakan sekolah? Gunakan menu "Aspirasi &amp; Saran" untuk menyuarakan pendapatmu.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panduan untuk admin -->
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+              <div style="width:32px;height:32px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">&#9878;</div>
+              <h3 style="margin-bottom:0">Untuk Admin / Staf</h3>
+            </div>
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h4>Login sebagai Staf</h4>
+                  <p>Gunakan tab "Staf / Admin" di halaman login. Masukkan username dan password yang telah diberikan oleh pengelola sistem.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h4>Pantau Dashboard</h4>
+                  <p>Dashboard menampilkan statistik real-time: jumlah laporan, distribusi kasus, dan laporan terbaru.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h4>Tangani Laporan Masuk</h4>
+                  <p>Di menu "Laporan Masuk", tinjau setiap laporan. Ubah statusnya: Ditinjau → Dalam Penanganan → Selesai.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <h4>Berikan Tanggapan</h4>
+                  <p>Tulis tanggapan resmi yang akan dilihat oleh pelapor di menu "Tindak Lanjut". Jaga kerahasiaan dan profesionalisme.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                  <h4>Arsip Kasus Selesai</h4>
+                  <p>Kasus yang sudah ditangani akan otomatis pindah ke menu "Selesai" sebagai dokumentasi.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips keamanan -->
+        <div class="sfb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span><strong>Tips Keamanan:</strong> Jika kamu menggunakan perangkat bersama (komputer sekolah, dll), pastikan kamu logout setelah selesai. Klik tombol "Keluar" di bagian bawah sidebar.</span>
+        </div>
+
+        <!-- FAQ -->
+        <div class="card">
+          <h3>Pertanyaan yang Sering Ditanyakan</h3>
+          <p>Jawaban atas pertanyaan umum seputar penggunaan CARE.</p>
+          <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-weight:700;color:var(--text);font-size:13.5px;margin-bottom:6px">Apakah laporan saya benar-benar anonim?</div>
+              <p style="color:var(--text2);font-size:13px;margin:0;line-height:1.65">Ya. Jika kamu mencentang "Anonim" saat membuat laporan, namamu tidak akan dicantumkan. Admin hanya melihat isi laporanmu, bukan identitasmu.</p>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-weight:700;color:var(--text);font-size:13.5px;margin-bottom:6px">Berapa lama laporan saya akan ditangani?</div>
+              <p style="color:var(--text2);font-size:13px;margin:0;line-height:1.65">Tim akan meninjau laporan dalam 1×24 jam. Penanganan penuh bergantung pada kompleksitas kasus, namun kamu akan selalu mendapat pembaruan status.</p>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-weight:700;color:var(--text);font-size:13.5px;margin-bottom:6px">Apakah saya harus punya bukti untuk melapor?</div>
+              <p style="color:var(--text2);font-size:13px;margin:0;line-height:1.65">Tidak. Kamu bisa melapor hanya dengan menceritakan kejadiannya. Bukti bersifat opsional dan membantu proses investigasi, tapi tidak wajib.</p>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+              <div style="font-weight:700;color:var(--text);font-size:13.5px;margin-bottom:6px">Di mana data laporan saya disimpan?</div>
+              <p style="color:var(--text2);font-size:13px;margin:0;line-height:1.65">Data saat ini tersimpan secara lokal di perangkat yang digunakan. Tidak ada data yang dikirim ke server eksternal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           10f. HTML — HALAMAN BARU: STUDI KASUS NYATA
+           ===================================================== -->
+      <div class="pg" id="pg-studikasus">
+        <div class="ph">
+          <h1>Studi <em>Kasus</em></h1>
+          <p>Contoh kasus nyata pelecehan seksual di lingkungan pendidikan Indonesia — pelajaran dan peringatan penting.</p>
+        </div>
+
+        <div class="sfb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Semua kasus di bawah ini merupakan kasus <strong>nyata yang pernah terjadi</strong> dan telah diberitakan media. Detail tertentu disamarkan untuk melindungi korban.</span>
+        </div>
+
+        <!-- Kasus 1 -->
+        <div class="case-card">
+          <div class="case-header">
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:6px">Kasus 01 &bull; 2021 &bull; Jawa Barat</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Guru Olahraga Melecehkan Belasan Siswi SMP</h4>
+            </div>
+            <div class="case-tag" style="background:rgba(249,115,22,0.12);color:#fdba74">Fisik</div>
+          </div>
+          <div class="case-body">
+            <p>Seorang guru olahraga di sebuah SMP di Jawa Barat dilaporkan melakukan pelecehan fisik terhadap belasan siswi selama lebih dari dua tahun. Pelaku memanfaatkan posisi otoritasnya saat pelajaran olahraga dan sesi remedial untuk melakukan sentuhan tidak pantas.</p>
+            <p>Para korban awalnya diam karena takut nilai mereka akan dipengaruhi dan tidak yakin ada yang akan mempercayai mereka. Kasus ini akhirnya terungkap ketika seorang siswi memberanikan diri bercerita kepada orang tuanya setelah mengetahui temannya mengalami hal serupa.</p>
+            <div class="case-warning">&#9888; <strong>Pola yang terjadi:</strong> Pelaku menggunakan posisi kekuasaan (guru) dan ancaman nilai untuk membungkam korban. Ini adalah pola <em>grooming</em> yang umum terjadi di lingkungan pendidikan.</div>
+            <div class="case-outcome">
+              <strong>&#9989; Hasil Penanganan</strong>
+              <p>Pelaku dipecat dari jabatannya dan diproses secara hukum. Para korban mendapat pendampingan psikologis. Kasus ini mendorong sekolah membentuk tim satuan tugas perlindungan siswa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kasus 2 -->
+        <div class="case-card">
+          <div class="case-header">
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:6px">Kasus 02 &bull; 2022 &bull; Jakarta</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Pelecehan Siber Antarsiswi SMA</h4>
+            </div>
+            <div class="case-tag" style="background:rgba(59,130,246,0.12);color:#93c5fd">Online</div>
+          </div>
+          <div class="case-body">
+            <p>Seorang siswa SMA di Jakarta secara sistematis menyebarkan foto-foto hasil editan bermuatan seksual yang menampilkan wajah teman sekelasnya melalui grup chat anonim. Korban baru mengetahui setelah teman lainnya memberitahu.</p>
+            <p>Dampaknya sangat besar: korban mengalami kecemasan berat, tidak mau pergi ke sekolah, dan prestasi akademiknya anjlok drastis. Selama berminggu-minggu, korban tidak berani melapor karena merasa malu.</p>
+            <div class="case-warning">&#9888; <strong>Pelajaran penting:</strong> Pelecehan online/siber <em>sama seriusnya</em> dengan pelecehan fisik. Dampak psikologisnya bisa sama parah, bahkan lebih, karena konten digital bisa menyebar luas.</div>
+            <div class="case-outcome">
+              <strong>&#9989; Hasil Penanganan</strong>
+              <p>Pelaku teridentifikasi melalui investigasi digital dan diskors dari sekolah. Konten diselesaikan melalui jalur hukum berdasarkan UU ITE. Korban mendapat konseling intensif selama 3 bulan.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kasus 3 -->
+        <div class="case-card">
+          <div class="case-header">
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:6px">Kasus 03 &bull; 2023 &bull; Sumatera Utara</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Pelecehan Verbal Berulang di Lingkungan Pondok Pesantren</h4>
+            </div>
+            <div class="case-tag" style="background:rgba(245,158,11,0.12);color:#f8c44e">Verbal</div>
+          </div>
+          <div class="case-body">
+            <p>Sejumlah santri di sebuah pondok pesantren di Sumatera Utara melaporkan pelecehan verbal berulang oleh seorang pengurus senior yang kerap membuat komentar seksual kepada santri perempuan, terutama saat kegiatan malam dan waktu istirahat.</p>
+            <p>Para korban tidak melapor selama berbulan-bulan karena menganggap ini "sudah biasa" dan takut dianggap tidak menghormati senioritas. Laporan akhirnya muncul setelah seorang wali santri mendapati anaknya menangis dan menolak kembali ke pesantren.</p>
+            <div class="case-warning">&#9888; <strong>Normalisasi itu berbahaya:</strong> Ketika pelecehan terjadi berulang kali tanpa sanksi, korban mulai menganggapnya "normal." Ini adalah tanda bahwa lingkungan tersebut <em>tidak aman</em>.</div>
+            <div class="case-outcome">
+              <strong>&#9989; Hasil Penanganan</strong>
+              <p>Pengurus yang bersangkutan diberhentikan. Pihak pesantren membentuk mekanisme pengaduan internal. Kasus ini menjadi salah satu pendorong revisi kebijakan perlindungan santri di tingkat nasional.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pesan penutup -->
+        <div style="background:linear-gradient(135deg,rgba(45,212,191,0.08) 0%,transparent 80%);border:1px solid rgba(45,212,191,0.18);border-radius:var(--rlg);padding:28px;margin-top:8px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);margin-bottom:10px">Pesan Penting</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text);margin-bottom:10px">Setiap kasus di atas bisa dicegah sejak awal.</h3>
+          <p style="color:var(--text2);font-size:14px;line-height:1.75;margin-bottom:16px">Ketika ada sistem pelaporan yang aman, edukasi yang tepat, dan budaya sekolah yang mendukung korban — kasus-kasus seperti ini bisa dihentikan lebih awal sebelum menelan lebih banyak korban.</p>
+          <button class="btn-p" style="width:auto;padding:12px 22px" onclick="showPg('laporan')">Buat Laporan Sekarang</button>
+        </div>
+      </div>
+
+      <!-- HALAMAN: MATERI EDUKASI -->
+      <div class="pg" id="pg-materi">
+        <div id="mgv">
+          <div class="ph">
+            <h1>Materi <em>Edukasi</em></h1>
+            <p>Pelajari tentang pelecehan seksual — apa itu, ciri-cirinya, dan cara melindungi diri. Klik kartu untuk membaca.</p>
+          </div>
+          <div class="mhero">
+            <h2>Kenapa edukasi ini penting?</h2>
+            <p>Pelecehan seksual sering terjadi karena kurangnya pemahaman tentang batas, hak tubuh, dan keberanian untuk melapor. Dengan memahami topik ini, kita dapat bersama-sama menciptakan lingkungan sekolah yang aman untuk semua.</p>
+          </div>
+          <div class="mgrid" id="mgrid"></div>
+        </div>
+        <div class="mdetail" id="mdv"></div>
+      </div>
+
+      <!-- HALAMAN: BANTUAN & KONTAK -->
+      <div class="pg" id="pg-info">
+        <div class="ph">
+          <h1>Bantuan <em>&amp; Kontak</em></h1>
+          <p>Sumber daya penting dan kontak darurat untuk mendapatkan bantuan segera.</p>
+        </div>
+        <div class="hl-card">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--rose);margin-bottom:8px">&#128222; Hubungi Sekarang</div>
+          <div class="hl-num">1500-454</div>
+          <div class="hl-lbl">Hotline SAPA — Layanan Pengaduan Kekerasan Berbasis Gender, 24 Jam</div>
+        </div>
+        <div class="g2" style="margin-bottom:24px">
+          <div class="ci"><h4>Komnas Perempuan</h4><p class="cn">021-3903 963</p><p>Komisi Nasional Anti Kekerasan terhadap Perempuan</p></div>
+          <div class="ci"><h4>Yayasan Pulih</h4><p class="cn">021-788-42580</p><p>Konseling psikologis untuk korban trauma</p></div>
+          <div class="ci"><h4>LBH APIK Jakarta</h4><p class="cn">021-877-91032</p><p>Bantuan hukum untuk korban kekerasan seksual</p></div>
+          <div class="ci"><h4>Into The Light (Mental Health)</h4><p class="cn">119 ext 8</p><p>Layanan kesehatan mental dan krisis 24 jam</p></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <h3>Tim Penanganan Sekolah</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2);font-size:13.5px">Guru BK</span><span style="font-weight:600;font-size:13.5px">Bu Ratna</span></div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2);font-size:13.5px">Wakasek Kesiswaan</span><span style="font-weight:600;font-size:13.5px">Pak Hendro</span></div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2);font-size:13.5px">Psikolog Sekolah</span><span style="font-weight:600;font-size:13.5px">Bu Dewi</span></div>
+              <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="color:var(--text2);font-size:13.5px">Satuan Perlindungan</span><span style="font-weight:600;color:var(--rose);font-size:13.5px">Ext. 201</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Hak-Hak Kamu sebagai Korban</h3>
+            <ul style="list-style:none;padding:0;margin-top:14px;display:flex;flex-direction:column;gap:10px">
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Dijaga kerahasiaannya sepanjang proses</span></li>
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Mendapat pendamping selama pelaporan</span></li>
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Mendapat dukungan psikologis tanpa biaya</span></li>
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Dilindungi dari pembalasan oleh pelaku</span></li>
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Menolak konfrontasi langsung dengan pelaku</span></li>
+              <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--rose)">&#10003;</span><span style="color:var(--text2);font-size:13.5px">Mendapat keadilan dan perlindungan hukum</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           10g. HTML — PANEL ADMIN: DASHBOARD
+           ===================================================== -->
+      <div class="pg" id="pg-dashboard">
+        <div class="ph">
+          <h1>Dashboard <em>Admin</em></h1>
+          <p>Ringkasan dan statistik seluruh laporan yang masuk ke sistem CARE.</p>
+        </div>
+        <!-- Kartu statistik 4 kolom -->
+        <div class="sr">
+          <div class="sb2"><div class="slb">Total Laporan</div><div class="sv" id="st">0</div><div class="ss">semua laporan</div></div>
+          <div class="sb2 am"><div class="slb">Menunggu</div><div class="sv" id="sp">0</div><div class="ss">perlu perhatian</div></div>
+          <div class="sb2 t"><div class="slb">Dalam Proses</div><div class="sv" id="spr">0</div><div class="ss">sedang ditangani</div></div>
+          <div class="sb2 gr"><div class="slb">Selesai</div><div class="sv" id="sd">0</div><div class="ss">ditindaklanjuti</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <h3>Distribusi Jenis Kasus</h3>
+            <p>Persentase laporan berdasarkan jenisnya.</p>
+            <div id="dbars" style="margin-top:6px"></div>
+          </div>
+          <div class="card">
+            <h3>Laporan Terbaru</h3>
+            <p>3 laporan paling baru yang masuk.</p>
+            <div id="drec"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL ADMIN: LAPORAN MASUK -->
+      <div class="pg" id="pg-alin">
+        <div class="ph">
+          <h1>Laporan <em>Masuk</em></h1>
+          <p>Seluruh laporan dari siswa. Tangani dengan profesional dan empati.</p>
+        </div>
+        <div class="card">
+          <div class="is" id="a-all"><div class="empty"><span class="ei">&#128196;</span>Belum ada laporan masuk.</div></div>
+        </div>
+      </div>
+
+      <!-- PANEL ADMIN: TINDAK LANJUT -->
+      <div class="pg" id="pg-atl">
+        <div class="ph">
+          <h1>Tindak <em>Lanjut</em></h1>
+          <p>Atur status dan berikan tanggapan pada setiap laporan yang masuk.</p>
+        </div>
+        <div class="card">
+          <div class="is" id="a-resp"><div class="empty"><span class="ei">&#9881;</span>Belum ada laporan untuk ditindaklanjuti.</div></div>
+        </div>
+      </div>
+
+      <!-- PANEL ADMIN: SELESAI -->
+      <div class="pg" id="pg-aselesai">
+        <div class="ph">
+          <h1>Laporan <em>Selesai</em></h1>
+          <p>Kasus yang telah selesai ditangani dan diarsipkan.</p>
+        </div>
+        <div class="card">
+          <div class="is" id="a-done"><div class="empty"><span class="ei">&#9989;</span>Belum ada laporan selesai.</div></div>
+        </div>
+      </div>
+
+      <!-- PANEL ADMIN: ASPIRASI MASUK -->
+      <div class="pg" id="pg-aasp">
+        <div class="ph">
+          <h1>Aspirasi <em>Masuk</em></h1>
+          <p>Saran dan masukan dari siswa untuk peningkatan kebijakan sekolah.</p>
+        </div>
+        <div class="card">
+          <div class="is" id="a-fb"><div class="empty"><span class="ei">&#128172;</span>Belum ada aspirasi masuk.</div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer app -->
+  <div style="background:var(--surface);border-top:1px solid var(--border);padding:13px 40px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--text3);transition:background var(--transition),border-color var(--transition)">
+    <span>&#169; 2025 CARE &mdash; ......................................................Community Against Rape &amp; Exploitation. Data tersimpan lokal di perangkat.</span>
+    <span>Darurat: <span style="color:var(--rose);font-weight:700">1500-454</span></span>
+  </div>
+</div>
+
+<!-- =====================================================
+     11. JAVASCRIPT — DATA & KONSTANTA
+     ===================================================== -->
+<script>
+/* ─── Data materi edukasi ─── */
+const MAT = [
+  {
+    ic: '&#128683;', ti: 'Apa Itu Pelecehan Seksual?', col: '#e63950',
+    tags: ['Definisi', 'Dasar'],
+    ds: 'Memahami definisi dan ruang lingkup pelecehan seksual secara menyeluruh.',
+    det: `<h3>Definisi Pelecehan Seksual</h3><p>Pelecehan seksual adalah segala bentuk perilaku atau tindakan bersifat seksual — perkataan, gerakan, maupun tindakan fisik — yang dilakukan tanpa persetujuan pihak lain dan menyebabkan rasa tidak nyaman, terancam, atau tersinggung.</p><div class="wbox"><p>&#9888; Pelecehan seksual <strong>bukan salah korban</strong>. Apapun pakaian, perilaku, atau situasinya — tidak ada alasan yang membenarkan pelecehan.</p></div><h3>Bentuk-Bentuk Pelecehan Seksual</h3><ul><li><strong>Verbal:</strong> Komentar, candaan, siulan, atau komentar tidak pantas tentang tubuh atau kehidupan seksual seseorang.</li><li><strong>Non-Verbal:</strong> Tatapan merendahkan, gerakan tubuh seksual, atau memperlihatkan gambar porno.</li><li><strong>Fisik:</strong> Menyentuh, meraba, mencium, atau memegang bagian tubuh tertentu tanpa izin.</li><li><strong>Online / Siber:</strong> Mengirim pesan, foto, atau video seksual yang tidak diminta.</li><li><strong>Psikologis:</strong> Ancaman, intimidasi, atau tekanan yang bersifat seksual.</li></ul><div class="tbox"><p>&#128218; Kamu berhak merasa tidak nyaman dan melaporkan apapun yang membuatmu tidak aman — sekecil apapun itu terasa.</p></div>`
+  },
+  {
+    ic: '&#128064;', ti: 'Ciri-Ciri Pelecehan Seksual', col: '#f59e0b',
+    tags: ['Identifikasi', 'Ciri'],
+    ds: 'Kenali tanda-tanda dan ciri-ciri perilaku yang termasuk pelecehan seksual.',
+    det: `<h3>Bagaimana Mengenali Pelecehan Seksual?</h3><p>Tidak selalu mudah mengenali apakah suatu perilaku termasuk pelecehan seksual — terutama jika dilakukan oleh seseorang yang kita percaya.</p><h3>Ciri-Ciri Perilaku Pelaku</h3><ul><li>Membuat komentar tentang penampilan atau tubuhmu yang membuatmu tidak nyaman</li><li>Menyentuh tubuhmu tanpa izin, meski hanya "bercanda"</li><li>Mengirim pesan, gambar, atau video bermuatan seksual</li><li>Memaksamu untuk menyimpan "rahasia" tentang interaksi tertentu</li><li>Memberikan perhatian berlebihan yang terasa tidak wajar</li><li>Mengancam atau memanfaatkan posisi kekuasaan (nilai, jabatan)</li></ul><div class="wbox"><p>&#128721; Jika seseorang berkata "aku hanya bercanda" atau "kamu terlalu sensitif" — perasaanmu tetap sah dan valid.</p></div><h3>Tanda-Tanda Pada Korban</h3><ul><li>Menarik diri dari pergaulan dan tampak murung</li><li>Tiba-tiba tidak mau pergi ke tempat tertentu di sekolah</li><li>Penurunan prestasi akademik yang mendadak</li><li>Cemas atau ketakutan tanpa sebab yang jelas</li></ul><div class="tbox"><p>&#128065; Jika kamu melihat temanmu menunjukkan tanda-tanda ini, dekati dengan lembut dan tawarkan dukungan.</p></div>`
+  },
+  {
+    ic: '&#128737;', ti: 'Cara Melindungi Diri', col: '#2dd4bf',
+    tags: ['Perlindungan', 'Tips'],
+    ds: 'Strategi dan langkah-langkah konkret untuk melindungi diri dari pelecehan seksual.',
+    det: `<h3>Mengenal Hak atas Tubuhmu</h3><p>Tubuhmu adalah milikmu sepenuhnya. Tidak ada orang yang berhak menyentuh, melihat, atau melakukan apapun terhadap tubuhmu tanpa izinmu.</p><h3>Langkah-Langkah Perlindungan Diri</h3><ol><li><strong>Percayai intuisimu.</strong> Jika sesuatu terasa tidak benar atau tidak nyaman, percayai perasaan itu.</li><li><strong>Tetapkan batasan dengan tegas.</strong> Kamu berhak mengatakan "tidak", "berhenti", atau "jangan".</li><li><strong>Hindari situasi berisiko.</strong> Jika memungkinkan, hindari berada di tempat sepi dengan orang yang membuatmu tidak nyaman.</li><li><strong>Cerita kepada orang yang dipercaya.</strong> Jangan simpan sendiri.</li><li><strong>Dokumentasikan kejadian.</strong> Simpan bukti seperti pesan atau catatan waktu kejadian.</li><li><strong>Laporkan sesegera mungkin.</strong> Gunakan platform CARE ini.</li></ol><div class="tbox"><p>&#128737; Melaporkan bukan berarti lemah — itu tindakan berani yang melindungi dirimu dan orang lain.</p></div>`
+  },
+  {
+    ic: '&#128172;', ti: 'Cara Mendukung Teman', col: '#a78bfa',
+    tags: ['Dukungan', 'Empati'],
+    ds: 'Bagaimana menjadi pendukung yang baik bagi teman yang mengalami pelecehan.',
+    det: `<h3>Menjadi Pendukung yang Baik</h3><p>Jika seorang teman menceritakan bahwa mereka mengalami pelecehan seksual, respons awalmu sangat penting.</p><h3>Yang Harus Dilakukan</h3><ul><li><strong>Percayai cerita mereka.</strong> Kalimat "Aku percaya kamu" sangat berarti.</li><li><strong>Dengarkan tanpa menghakimi.</strong> Biarkan mereka berbicara.</li><li><strong>Tanyakan apa yang mereka butuhkan.</strong> Menemani melapor atau sekadar didengarkan?</li><li><strong>Tawarkan untuk menemani melapor.</strong> Proses pelaporan lebih ringan bersama.</li></ul><div class="wbox"><p>&#10060; Hindari kalimat: "Kamu pasti salah paham", "Kenapa kamu mau ke sana?", atau "Diam saja agar tidak ribut".</p></div><div class="tbox"><p>&#128154; Kehadiranmu, meski hanya sebagai pendengar, sudah sangat membantu.</p></div>`
+  },
+  {
+    ic: '&#9878;', ti: 'Proses Pelaporan & Hukum', col: '#34d399',
+    tags: ['Hukum', 'Prosedur'],
+    ds: 'Pahami prosedur pelaporan resmi dan perlindungan hukum yang tersedia.',
+    det: `<h3>Dasar Hukum Perlindungan</h3><p>Di Indonesia, pelecehan seksual dilindungi oleh:</p><ul><li><strong>UU No. 12 Tahun 2022</strong> tentang TPKS — memberikan definisi luas dan perlindungan hukum bagi korban.</li><li><strong>Permendikbudristek No. 30 Tahun 2021</strong> — mengatur pencegahan dan penanganan kekerasan seksual di pendidikan.</li><li><strong>UU Perlindungan Anak</strong> — khusus melindungi korban yang masih di bawah umur.</li></ul><h3>Langkah-Langkah Pelaporan</h3><ol><li><strong>Laporkan ke pihak sekolah</strong> — guru BK, wali kelas, atau kepala sekolah.</li><li><strong>Gunakan platform CARE</strong> — untuk melaporkan secara aman dan terdokumentasi.</li><li><strong>Hubungi Komnas Perempuan</strong> atau LBH APIK jika butuh bantuan hukum.</li></ol><div class="tbox"><p>&#9878; Kamu berhak didampingi oleh pendamping pilihanmu selama proses pelaporan.</p></div>`
+  },
+  {
+    ic: '&#129505;', ti: 'Pemulihan & Kesehatan Mental', col: '#f472b6',
+    tags: ['Pemulihan', 'Psikologi'],
+    ds: 'Memahami dampak psikologis dan proses pemulihan bagi korban pelecehan seksual.',
+    det: `<h3>Dampak Psikologis Pelecehan Seksual</h3><p>Setiap orang bereaksi berbeda — tidak ada respons yang "benar" atau "salah".</p><ul><li>Rasa malu, bersalah, atau merasa "kotor" (padahal ini bukan salah korban)</li><li>Kecemasan dan serangan panik</li><li>Flashback atau mimpi buruk tentang kejadian</li><li>Sulit berkonsentrasi atau menurunnya prestasi belajar</li></ul><div class="wbox"><p>&#128721; Semua perasaan ini adalah respons normal terhadap pengalaman yang tidak normal. Kamu tidak sendirian.</p></div><h3>Langkah-Langkah Pemulihan</h3><ol><li><strong>Akui perasaanmu.</strong> Jangan menekan apa yang kamu rasakan.</li><li><strong>Cari dukungan.</strong> Ceritakan kepada orang yang kamu percaya.</li><li><strong>Minta bantuan profesional.</strong> Psikolog atau konselor sekolah dapat membantu.</li><li><strong>Beri dirimu waktu.</strong> Pemulihan tidak terjadi dalam semalam.</li></ol><div class="tbox"><p>&#129505; Mencari bantuan adalah tanda kekuatan. Kamu pantas mendapatkan kehidupan yang lebih baik.</p></div>`
+  }
+];
+
+/* ─── Kunci localStorage & utilitas ─── */
+const K = { r: 'care_reports', fb: 'care_feedback', u: 'care_user', theme: 'care_theme' };
+
+/* Simpan data ke localStorage */
+const sv  = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+/* Ambil data dari localStorage (default array kosong) */
+const ld  = k => JSON.parse(localStorage.getItem(k) || '[]');
+/* Ambil data user yang sedang login */
+const lu  = () => JSON.parse(localStorage.getItem(K.u) || 'null');
+/* Format tanggal dan waktu saat ini */
+const now = () => new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+/* Shortcut getElementById */
+const $   = id => document.getElementById(id);
+
+/* Daftar kata-kata kasar yang diblokir */
+const badWords = ['anjing', 'bangsat', 'bajingan', 'kontol', 'memek', 'shit', 'fuck', 'bodoh', 'tolol'];
+const hasBadWord = t => badWords.some(w => (t || '').toLowerCase().includes(w));
+
+/* Penyimpanan sementara bukti foto yang di-upload admin */
+const evU = {};
+
+/* =====================================================
+   12. JAVASCRIPT — FUNGSI LOGIN & AUTENTIKASI
+   ===================================================== */
+
+/* Tab toggle di layar login (Siswa / Admin) */
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tp').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    $(`tp-${b.dataset.t}`).classList.add('active');
+  });
+});
+
+/* Form login siswa — hanya perlu nama */
+$('wf').addEventListener('submit', e => {
+  e.preventDefault();
+  enterApp({ role: 'warga', name: $('wn').value.trim() || 'Anonim' });
+});
+
+/* Form login admin — username & password */
+$('af').addEventListener('submit', e => {
+  e.preventDefault();
+  if ($('au').value.trim() === 'admin' && $('ap').value === '123') {
+    enterApp({ role: 'pengurus', name: 'Admin' });
+  } else {
+    alert('Username atau password salah.');
+  }
+});
+
+/* Tombol keluar — hapus sesi dan kembali ke login */
+$('lobtn').addEventListener('click', () => {
+  localStorage.removeItem(K.u);
+  $('login-screen').style.display = 'flex';
+  $('app').style.display = 'none';
+});
+
+/* Fungsi masuk ke aplikasi setelah login berhasil */
+function enterApp(u) {
+  sv(K.u, u);                           // Simpan data user
+  $('login-screen').style.display = 'none';
+  $('app').style.display = 'block';
+  applyRole(u);                         // Tampilkan menu sesuai peran
+  renderAll();                          // Render semua data
+  showPg('beranda');                    // Tampilkan halaman beranda
+}
+
+/* Terapkan tampilan sesuai peran pengguna (siswa vs admin) */
+function applyRole(u) {
+  const isAdmin = u.role === 'pengurus';
+  /* Menu siswa: tampil untuk siswa, sembunyikan untuk admin */
+  $('nw').style.display = isAdmin ? 'none' : 'block';
+  /* Menu admin: tampil untuk admin, sembunyikan untuk siswa */
+  $('na').style.display = isAdmin ? 'block' : 'none';
+  /* Badge peran di sidebar */
+  $('rl').textContent = isAdmin ? '⚖ Admin' : '👤 Siswa';
+  $('rl').className = 'sb-role ' + (isAdmin ? 'a' : 'w');
+  /* Sembunyikan tombol buat laporan untuk admin */
+  if ($('hero-lapor')) $('hero-lapor').style.display = isAdmin ? 'none' : '';
+  /* Deskripsi beranda berbeda untuk siswa dan admin */
+  const desc = isAdmin
+    ? 'Panel admin — pantau dan tindaklanjuti laporan dari siswa dengan profesional.'
+    : 'Platform perlindungan siswa dari pelecehan seksual di lingkungan sekolah — aman, rahasia, dan terpercaya.';
+  if ($('bd-desc')) $('bd-desc').textContent = desc;
+}
+
+/* =====================================================
+   13. JAVASCRIPT — NAVIGASI HALAMAN
+   ===================================================== */
+
+/* Tampilkan halaman berdasarkan nama */
+function showPg(name) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const p = $(`pg-${name}`);
+  if (p) p.classList.add('active');
+  document.querySelectorAll(`.ni[data-p="${name}"]`).forEach(n => n.classList.add('active'));
+  if (name === 'materi') renderMatGrid(); /* Render grid materi saat pertama kali dibuka */
+  closeSb();
+  if ($('cnt')) $('cnt').scrollTop = 0;
+}
+
+/* Pasang event listener ke semua item navigasi sidebar */
+document.querySelectorAll('.ni[data-p]').forEach(b => {
+  b.addEventListener('click', () => showPg(b.dataset.p));
+});
+
+/* ─── Fungsi mobile sidebar ─── */
+function openSb()  { $('sb').classList.add('open'); $('ovl').classList.add('on'); }
+function closeSb() { $('sb').classList.remove('open'); $('ovl').classList.remove('on'); }
+
+/* =====================================================
+   14. JAVASCRIPT — FORM SUBMISSION
+   ===================================================== */
+
+/* Proses upload foto bukti laporan oleh siswa */
+$('rfile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) { $('rfile').dataset.photo = ''; return; }
+  const r = new FileReader();
+  r.onload = () => { $('rfile').dataset.photo = r.result; };
+  r.readAsDataURL(f);
+});
+
+/* Kirim laporan baru oleh siswa */
+$('rf').addEventListener('submit', e => {
+  e.preventDefault();
+  const desc = $('rdesc').value.trim();
+  const loc  = $('rloc').value.trim();
+  /* Validasi bahasa — tolak jika ada kata kasar */
+  if (hasBadWord(desc) || hasBadWord(loc)) {
+    alert('Mohon gunakan bahasa yang sopan dalam laporan.');
+    return;
+  }
+  const u      = lu();
+  const isAnon = $('anon').checked;
+  const rpts   = ld(K.r);
+  /* Tambahkan laporan baru ke array */
+  rpts.push({
+    type:        $('rtype').value,
+    location:    loc,
+    pelaku:      $('rpelaku').value.trim(),
+    description: desc,
+    photo:       $('rfile').dataset.photo || $('rlink').value.trim(),
+    date:        now(),
+    status:      'Menunggu tindak lanjut',
+    reporter:    isAnon ? 'Anonim' : (u?.name || 'Anonim'),
+    isAnon
+  });
+  sv(K.r, rpts);
+  renderAll();
+  $('rf').reset();
+  $('rfile').dataset.photo = '';
+  alert('Laporan berhasil dikirim. Tim akan segera menindaklanjuti. Terima kasih atas keberanianmu.');
+  showPg('lsaya');
+});
+
+/* Kirim aspirasi/saran oleh siswa */
+$('fbf').addEventListener('submit', e => {
+  e.preventDefault();
+  const msg = $('fbm').value.trim();
+  if (hasBadWord(msg)) { alert('Mohon gunakan bahasa yang sopan.'); return; }
+  const fbs = ld(K.fb);
+  fbs.push({
+    name:    $('fbn').value.trim() || 'Anonim',
+    topic:   $('fbt').value,
+    message: msg,
+    date:    now()
+  });
+  sv(K.fb, fbs);
+  renderAll();
+  $('fbf').reset();
+  alert('Aspirasi berhasil dikirim. Terima kasih atas masukanmu!');
+});
+
+/* =====================================================
+   15. JAVASCRIPT — RENDER KOMPONEN
+   ===================================================== */
+
+/* Normalisasi string status laporan */
+const normSt = s => (s || '').trim().toLowerCase();
+
+/* Tentukan kelas CSS badge berdasarkan status */
+function stCls(s) {
+  const n = normSt(s);
+  if (n === 'selesai') return 'd';
+  if (['dalam proses', 'dikerjakan', 'dalam penanganan'].includes(n)) return 'pr';
+  if (['dilihat', 'ditinjau'].includes(n)) return 's';
+  return 'p'; /* default: menunggu */
+}
+
+/* Render ulang semua komponen data di seluruh halaman */
+function renderAll() {
+  const rpts = ld(K.r);
+  const fbs  = ld(K.fb);
+  /* Filter laporan berdasarkan status */
+  const active = rpts.filter(r => !r.deleted && normSt(r.status) !== 'selesai');
+  const done   = rpts.filter(r => !r.deleted && normSt(r.status) === 'selesai');
+  const all    = rpts.filter(r => !r.deleted);
+
+  /* Render untuk halaman SISWA */
+  rl($('w-active'), active, rpts, false, false, 'Belum ada laporan aktif.');
+  rl($('w-done'),   done,   rpts, false, false, 'Belum ada laporan selesai.');
+  rlFb($('w-fb'),   fbs.filter(f => !f.deleted), fbs, false);
+
+  /* Render untuk halaman ADMIN */
+  rl($('a-all'),  all,    rpts, true,  false, 'Belum ada laporan masuk.');
+  rl($('a-resp'), active, rpts, true,  true,  'Belum ada laporan aktif.');
+  rl($('a-done'), done,   rpts, true,  false, 'Belum ada laporan selesai.');
+  rlFb($('a-fb'), fbs.filter(f => !f.deleted), fbs, true);
+
+  renderStats(rpts);
+  renderRecent(all, rpts);
+
+  /* Update badge notifikasi di nav admin */
+  const pnd = rpts.filter(r => !r.deleted && normSt(r.status) === 'menunggu tindak lanjut').length;
+  const nb  = $('nbdg');
+  if (nb) { nb.textContent = pnd; nb.style.display = pnd ? 'inline-flex' : 'none'; }
+}
+
+/* Render daftar laporan ke dalam elemen container */
+function rl(c, items, all, isAdmin, withCtrl, emptyMsg) {
+  if (!c) return;
+  if (!items.length) {
+    c.innerHTML = `<div class="empty"><span class="ei">&#128193;</span>${emptyMsg}</div>`;
+    return;
+  }
+  c.innerHTML = '';
+  [...items].reverse().forEach(r => c.appendChild(mkRC(r, all.indexOf(r), isAdmin, withCtrl)));
+}
+
+/* Render daftar aspirasi/feedback */
+function rlFb(c, items, all, isAdmin) {
+  if (!c) return;
+  if (!items.length) {
+    c.innerHTML = '<div class="empty"><span class="ei">&#128172;</span>Belum ada aspirasi.</div>';
+    return;
+  }
+  c.innerHTML = '';
+  [...items].reverse().forEach(f => c.appendChild(mkFb(f, all.indexOf(f), isAdmin)));
+}
+
+/* Render statistik di halaman dashboard admin */
+function renderStats(rpts) {
+  const all = rpts.filter(r => !r.deleted);
+  const t   = all.length;
+  if ($('st'))  $('st').textContent  = t;
+  if ($('sp'))  $('sp').textContent  = all.filter(r => normSt(r.status) === 'menunggu tindak lanjut').length;
+  if ($('spr')) $('spr').textContent = all.filter(r => ['dalam proses', 'dikerjakan', 'dalam penanganan'].includes(normSt(r.status))).length;
+  if ($('sd'))  $('sd').textContent  = all.filter(r => normSt(r.status) === 'selesai').length;
+
+  /* Progress bar distribusi jenis kasus */
+  const bars = $('dbars');
+  if (!bars) return;
+  bars.innerHTML = '';
+  const types = ['Pelecehan Verbal', 'Pelecehan Fisik', 'Pelecehan Online', 'Intimidasi', 'Ekshibisionisme', 'Kekerasan Seksual', 'Lainnya'];
+  const tot = t || 1;
+  types.forEach(ty => {
+    const cnt = all.filter(r => r.type && r.type.includes(ty)).length;
+    const pct = Math.round((cnt / tot) * 100);
+    bars.innerHTML += `<div class="pb"><div class="pbl"><span>${ty}</span><span>${cnt} (${pct}%)</span></div><div class="pbt"><div class="pbf" style="width:${pct}%"></div></div></div>`;
+  });
+}
+
+/* Render 3 laporan terbaru di dashboard */
+function renderRecent(all, rpts) {
+  const rec  = $('drec');
+  if (!rec) return;
+  const last = [...all].reverse().slice(0, 3);
+  if (!last.length) {
+    rec.innerHTML = '<div class="empty"><span class="ei">&#128196;</span>Belum ada laporan.</div>';
+    return;
+  }
+  rec.innerHTML = '';
+  last.forEach(r => {
+    const d = document.createElement('div');
+    d.style = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:10px';
+    d.innerHTML = `<div><div style="font-size:13px;font-weight:600;color:var(--text)">${r.type.split('(')[0].trim()}</div><div style="font-size:11.5px;color:var(--text3)">${r.date}</div></div><span class="bdg ${stCls(r.status)}">${r.status}</span>`;
+    rec.appendChild(d);
+  });
+}
+
+/* Buat elemen kartu laporan (dipakai siswa & admin) */
+function mkRC(r, idx, isAdmin, withCtrl) {
+  const d = document.createElement('div');
+  d.className = 'rc';
+
+  /* Jika laporan dihapus admin, tampilkan placeholder */
+  if (r.deleted) {
+    d.innerHTML = `<div class="rct"><div class="rcti" style="color:var(--text3)">Laporan dihapus</div><span class="bdg del">Dihapus</span></div>`;
+    return d;
+  }
+
+  /* Baris terlapor (opsional) */
+  const pelakuHtml = r.pelaku ? `<div class="rcl">&#128100; Terlapor: ${r.pelaku}</div>` : '';
+  /* Link atau foto bukti (opsional) */
+  const photoHtml  = r.photo  ? `<a href="${r.photo}" target="_blank" style="font-size:13px;color:var(--rose)">&#128247; Lihat bukti</a>` : '';
+  /* Foto bukti dari admin */
+  const evidHtml   = r.evidence ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:6px">Bukti Tindak Lanjut</div><a href="${r.evidence}" target="_blank"><img src="${r.evidence}" alt="Bukti" style="max-width:100px;border-radius:8px;display:block"/></a></div>` : '';
+  /* Tanggapan dari admin */
+  const respHtml   = r.response ? `<div class="resp-blk"><strong>Tanggapan Tim</strong><p>${r.response}</p></div>` : '';
+  /* Nama pelapor (hanya terlihat admin) */
+  const repLine    = isAdmin ? `<span class="rdate">&#128100; ${r.reporter || 'Anonim'}${r.isAnon ? ' (anonim)' : ''}</span>` : '';
+
+  /* Panel kontrol admin — hanya tampil di halaman tindak lanjut */
+  const adminCtrl = isAdmin && withCtrl ? `
+    <div class="ac">
+      <div class="acr">
+        <div>
+          <label>Ubah Status</label>
+          <select id="st${idx}" onchange="updSt(${idx},this.value)">
+            <option value="Menunggu tindak lanjut" ${r.status==='Menunggu tindak lanjut'?'selected':''}>Menunggu tindak lanjut</option>
+            <option value="Ditinjau" ${r.status==='Ditinjau'?'selected':''}>Ditinjau</option>
+            <option value="Dalam Penanganan" ${r.status==='Dalam Penanganan'?'selected':''}>Dalam Penanganan</option>
+            <option value="Selesai" ${r.status==='Selesai'?'selected':''}>Selesai</option>
+          </select>
+        </div>
+        <div>
+          <label>Link Bukti (opsional)</label>
+          <input id="ev${idx}" type="url" placeholder="https://" value="${r.evidence||''}"/>
+        </div>
+      </div>
+      <label>Upload Foto Bukti</label>
+      <input type="file" accept="image/*" onchange="hEv(event,${idx})" style="margin-bottom:12px"/>
+      <label>Catatan / Tanggapan untuk Pelapor</label>
+      <textarea id="rs${idx}" rows="3">${r.response||''}</textarea>
+      <button class="btn-g" onclick="svResp(${idx})" style="font-size:13px">Simpan Tanggapan</button>
+    </div>` : '';
+
+  /* Tombol hapus laporan — hanya untuk admin */
+  const delBtn = isAdmin ? `<button class="btn-ro" style="font-size:12px;margin-top:8px" onclick="delRpt(${idx})">Hapus Laporan</button>` : '';
+
+  d.innerHTML = `
+    <div class="rct">
+      <div>
+        <div class="rcti">${r.type}</div>
+        <div class="rcl">&#128205; ${r.location}</div>
+        ${pelakuHtml}
+      </div>
+      <span class="bdg ${stCls(r.status)}">${r.status}</span>
+    </div>
+    <div class="rcd">${r.description}</div>
+    ${photoHtml}${evidHtml}${respHtml}
+    <div class="rcf">
+      <span class="rdate">&#128336; ${r.date}</span>
+      ${repLine}
+    </div>
+    ${adminCtrl}${delBtn}`;
+
+  return d;
+}
+
+/* Buat elemen kartu aspirasi/feedback */
+function mkFb(f, idx, isAdmin) {
+  const d = document.createElement('div');
+  d.className = 'fbc';
+  /* Tombol hapus hanya untuk admin */
+  const delBtn = isAdmin ? `<button class="btn-ro" style="font-size:12px;margin-top:6px" onclick="delFb(${idx})">Hapus</button>` : '';
+  d.innerHTML = `<div class="fbt">${f.topic}</div><div class="fbm">${f.message}</div><div class="fbmt">${f.name||'Anonim'} &mdash; ${f.date}</div>${delBtn}`;
+  return d;
+}
+
+/* =====================================================
+   16. JAVASCRIPT — AKSI ADMIN
+   ===================================================== */
+
+/* Update status laporan oleh admin */
+function updSt(i, v) {
+  const r = ld(K.r);
+  if (!r[i]) return;
+  r[i].status = v;
+  sv(K.r, r);
+  renderAll();
+}
+
+/* Handle upload foto bukti oleh admin */
+function hEv(e, i) {
+  const f = e.target.files[0];
+  if (!f) { delete evU[i]; return; }
+  const rd = new FileReader();
+  rd.onload = () => { evU[i] = rd.result; };
+  rd.readAsDataURL(f);
+}
+
+/* Simpan tanggapan admin pada sebuah laporan */
+function svResp(i) {
+  const r = ld(K.r);
+  if (!r[i]) return;
+  const resp = document.getElementById(`rs${i}`)?.value.trim();
+  const ev   = document.getElementById(`ev${i}`)?.value.trim();
+  if (resp !== undefined) r[i].response = resp;
+  if (ev)    r[i].evidence = ev;
+  if (evU[i]) r[i].evidence = evU[i];    /* Prioritaskan upload foto jika ada */
+  sv(K.r, r);
+  renderAll();
+  alert('Tanggapan berhasil disimpan dan dikirim ke pelapor.');
+}
+
+/* Hapus (soft delete) laporan oleh admin */
+function delRpt(i) {
+  const r = ld(K.r);
+  if (!r[i]) return;
+  if (!confirm('Hapus laporan ini secara permanen?')) return;
+  r[i].deleted = true;
+  sv(K.r, r);
+  renderAll();
+}
+
+/* Hapus (soft delete) aspirasi oleh admin */
+function delFb(i) {
+  const f = ld(K.fb);
+  if (!f[i]) return;
+  f[i].deleted = true;
+  sv(K.fb, f);
+  renderAll();
+}
+
+/* =====================================================
+   17. JAVASCRIPT — MATERI EDUKASI
+   ===================================================== */
+
+/* Flag agar grid materi hanya dirender sekali */
+let mgBuilt = false;
+
+/* Render grid kartu materi edukasi */
+function renderMatGrid() {
+  if (mgBuilt) return;
+  mgBuilt = true;
+  const grid = $('mgrid');
+  if (!grid) return;
+  MAT.forEach((m, i) => {
+    const c = document.createElement('div');
+    c.className = 'mc';
+    c.onclick   = () => showMat(i);
+    c.innerHTML = `
+      <div class="mca" style="background:${m.col}"></div>
+      <div class="mcb">
+        <div class="mci">${m.ic}</div>
+        <div class="mct">${m.ti}</div>
+        <div class="mcd">${m.ds}</div>
+        <div class="mctags">${m.tags.map(t => `<span class="mtag">${t}</span>`).join('')}</div>
+      </div>`;
+    grid.appendChild(c);
+  });
+}
+
+/* Tampilkan detail satu materi */
+function showMat(i) {
+  const m  = MAT[i];
+  $('mgv').style.display = 'none';
+  const dv = $('mdv');
+  dv.classList.add('active');
+  dv.innerHTML = `
+    <button class="mbk" onclick="backMat()">&#8592; Kembali ke Materi</button>
+    <div style="display:inline-block;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:28px;margin-bottom:16px">${m.ic}</div>
+    <h2>${m.ti}</h2>
+    ${m.det}`;
+}
+
+/* Kembali ke grid materi dari halaman detail */
+function backMat() {
+  $('mgv').style.display = 'block';
+  $('mdv').classList.remove('active');
+  $('mdv').innerHTML = '';
+}
+
+/* =====================================================
+   18. JAVASCRIPT — TEMA GELAP / TERANG
+   ===================================================== */
+
+/* Terapkan tema ke elemen HTML dan perbarui UI toggle */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const track = $('toggle-track');
+  const label = $('theme-label');
+  if (theme === 'light') {
+    track?.classList.add('on');
+    if (label) label.textContent = '☀ Mode Terang';
+  } else {
+    track?.classList.remove('on');
+    if (label) label.textContent = '☾ Mode Gelap';
+  }
+  localStorage.setItem(K.theme, theme); /* Simpan preferensi tema */
+}
+
+/* Toggle antara gelap dan terang */
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+/* =====================================================
+   INISIALISASI — Cek sesi login & tema tersimpan
+   ===================================================== */
+
+/* Muat tema tersimpan (default: dark) */
+const savedTheme = localStorage.getItem(K.theme) || 'dark';
+applyTheme(savedTheme);
+
+/* Cek apakah user sudah login sebelumnya */
+const savedUser = lu();
+if (savedUser) {
+  /* Langsung masuk tanpa perlu login ulang */
+  $('login-screen').style.display = 'none';
+  $('app').style.display = 'block';
+  applyRole(savedUser);
+  renderAll();
+  showPg('beranda');
+} else {
+  /* Tampilkan layar login */
+  $('login-screen').style.display = 'flex';
+  $('app').style.display = 'none';
+}
+</script>
+</body>
+</html>
